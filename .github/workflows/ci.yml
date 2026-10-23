@@ -1,0 +1,16 @@
+# Unit tests and a syntax check on every push and pull request (the end-to-end test needs a key, so it runs locally).
+name: ci
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Syntax check
+        run: npm run check
+      - name: Unit tests
+        run: npm test
+      - name: Manifest and package versions match
+        run: test "$(node -p "require('./extension/manifest.json').version")" = "$(node -p "require('./package.json').version")"

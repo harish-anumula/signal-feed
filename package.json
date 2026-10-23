@@ -1,0 +1,18 @@
+{
+  "name": "signal-feed",
+  "version": "1.0.0",
+  "description": "Fold away ragebait, hype and engagement bait on X and YouTube, and highlight what you care about.",
+  "author": "Harish Reddy Anumula",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "test": "node --test test/core.test.js",
+    "test:e2e": "node test/e2e.mjs",
+    "check": "for f in extension/background.js extension/src/*.js extension/popup/*.js; do node --check \"$f\" || exit 1; done",
+    "icons": "node scripts/render-icons.mjs",
+    "package": "node scripts/package.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.56"
+  }
+}

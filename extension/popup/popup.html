@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Signal Feed</title>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <main class="shell">
+      <section class="welcome" hidden>
+        <img src="../icons/icon-128.png" width="56" height="56" alt="">
+        <h1>Calmer feeds on X and YouTube</h1>
+        <p>Signal Feed folds away ragebait, empty hype and engagement bait before you scroll to it, and can highlight the topics you care about. <span id="welcome-next">Connect a key below to start.</span></p>
+      </section>
+
+      <header class="top">
+        <img class="logo" src="../icons/icon-48.png" width="28" height="28" alt="">
+        <div class="title">
+          <h2>Signal Feed</h2>
+          <p id="status" class="status">Loading…</p>
+        </div>
+        <label class="switch" title="Turn Signal Feed on or off (Alt+Shift+S)">
+          <input id="enabled" type="checkbox" aria-label="Signal Feed on">
+          <span></span>
+        </label>
+      </header>
+
+      <section id="connect" class="card connect" hidden>
+        <h3>Connect OpenRouter</h3>
+        <p class="hint">Signal Feed asks Jev, a fast judgment model, about each post. It runs on your own OpenRouter key and costs about 2 cents per 1,000 posts.</p>
+        <form id="key-form" class="key-row">
+          <input id="key" type="password" autocomplete="off" spellcheck="false" placeholder="sk-or-v1-…" aria-label="OpenRouter API key">
+          <button id="key-save" type="submit" class="primary">Connect</button>
+        </form>
+        <p id="key-error" class="error" role="alert" hidden></p>
+        <p class="fine"><a href="https://openrouter.ai/keys" target="_blank" rel="noopener">Get a key at openrouter.ai</a> · It stays in this browser and is sent only to OpenRouter.</p>
+      </section>
+
+      <div id="main" class="main" hidden>
+        <p id="alert" class="alert" role="alert" hidden></p>
+
+        <section class="card">
+          <h3>Hide</h3>
+          <div id="chips" class="chips" role="group" aria-label="What to hide"></div>
+          <input id="hide-extra" class="text" type="text" maxlength="300" placeholder="Anything else? e.g. crypto, celebrity news" aria-label="Anything else to hide">
+        </section>
+
+        <section class="card">
+          <h3>Highlight <span class="optional">optional</span></h3>
+          <input id="interests" class="text" type="text" maxlength="300" placeholder="Topics you want more of, e.g. AI research, climbing" aria-label="Topics to highlight">
+        </section>
+
+        <section class="card row-card">
+          <h3>Strictness</h3>
+          <div id="strictness" class="segmented" role="radiogroup" aria-label="Strictness">
+            <button type="button" role="radio" data-value="relaxed">Relaxed</button>
+            <button type="button" role="radio" data-value="balanced">Balanced</button>
+            <button type="button" role="radio" data-value="strict">Strict</button>
+          </div>
+        </section>
+
+        <section class="card row-card">
+          <h3>Sites</h3>
+          <div class="sites">
+            <label class="site"><input id="site-x" type="checkbox"><span>X</span></label>
+            <label class="site"><input id="site-youtube" type="checkbox"><span>YouTube</span></label>
+          </div>
+        </section>
+
+        <footer class="foot">
+          <span id="key-hint">OpenRouter key saved</span>
+          <button id="change-key" type="button" class="link">Change</button>
+          <span class="spacer"></span>
+          <kbd title="Turn on or off from any tab">Alt+Shift+S</kbd>
+        </footer>
+      </div>
+    </main>
+    <script src="../src/core.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>

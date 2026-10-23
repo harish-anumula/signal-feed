@@ -1,0 +1,42 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>YouTube (fixture)</title>
+<style>
+  body { margin: 0; background: #fff; color: #0f0f0f; font: 14px/1.4 Roboto, -apple-system, sans-serif; }
+  #contents { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding: 24px; }
+  ytd-rich-item-renderer, ytd-compact-video-renderer, #related { display: block; }
+  .thumb { aspect-ratio: 16/9; border-radius: 12px; background: linear-gradient(135deg, var(--a, #c7d2fe), var(--b, #818cf8)); }
+  .meta { color: #606060; font-size: 12.5px; margin-top: 2px; }
+  #video-title { display: block; margin-top: 8px; font-weight: 600; color: #0f0f0f; text-decoration: none; }
+  #related { padding: 0 24px 24px; width: 400px; }
+  #related ytd-compact-video-renderer { display: flex; gap: 8px; margin-bottom: 8px; }
+  #related .thumb { width: 160px; flex: none; }
+</style></head>
+<body><div id="contents"></div><div id="related"></div>
+<script>
+const home = [
+  ["noise", "I Spent 24 Hours In A Haunted Mall (GONE WRONG) 😱"],
+  ["useful", "Building a B-tree from scratch in Rust: insertion, splits and a fuzz test"],
+  ["noise", "You WON'T BELIEVE What This Celebrity Said 😳 #shorts"],
+  ["useful", "How GPUs execute matrix multiplication: tiling, shared memory and tensor cores, explained with diagrams"],
+  ["noise", "FREE V-BUCKS GIVEAWAY!!! (NOT CLICKBAIT) 🎁🎁"],
+  ["useful", "MIT 6.824 Lecture 3: Raft consensus, leader election and log replication"]
+];
+const related = [
+  ["noise", "Try Not To Laugh Challenge #47 🤣 IMPOSSIBLE"],
+  ["useful", "Profiling Python with py-spy and flame graphs: a 20-minute walkthrough"],
+  ["noise", "Reacting To The WORST Cooking Fails Ever 😂"],
+  ["useful", "Designing a rate limiter: token bucket vs sliding window, with load tests"]
+];
+const card = (tag, kind, title) => {
+  const el = document.createElement(tag);
+  el.dataset.kind = kind;
+  const hues = [["#fde68a", "#f59e0b"], ["#bfdbfe", "#3b82f6"], ["#fecaca", "#ef4444"], ["#bbf7d0", "#16a34a"], ["#e9d5ff", "#9333ea"], ["#a5f3fc", "#0891b2"]];
+  const [a, b] = hues[(window.__n = (window.__n || 0) + 1) % hues.length];
+  el.innerHTML = `<div class="thumb" style="--a:${a};--b:${b}"></div><div><a id="video-title" href="/watch?v=x"></a><div class="meta">Example channel · 120K views · 2 days ago</div></div>`;
+  el.querySelector("#video-title").textContent = title;
+  el.querySelector("#video-title").setAttribute("title", title);
+  return el;
+};
+for (const [k, t] of home) document.getElementById("contents").appendChild(card("ytd-rich-item-renderer", k, t));
+for (const [k, t] of related) document.getElementById("related").appendChild(card("ytd-compact-video-renderer", k, t));
+</script></body></html>

@@ -1,0 +1,104 @@
+/* Signal Feed on X and YouTube. Neutral, translucent colours so it sits well on light, dim and dark themes. */
+
+.sf-card {
+  position: relative !important;
+}
+
+/* Waiting for Jev (usually done before the card scrolls into view). */
+.sf-card[data-sf="pending"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(100deg, transparent 30%, rgba(127, 127, 127, 0.1) 50%, transparent 70%) 0 0 / 250% 100%;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: sf-shimmer 1.2s linear infinite;
+}
+
+@keyframes sf-shimmer {
+  from { background-position: 125% 0; }
+  to { background-position: -125% 0; }
+}
+
+/* Highlighted: a thin accent on the left edge (X, sidebar) or a ring (YouTube home grid). */
+.sf-card[data-sf="highlighted"] {
+  box-shadow: inset 3px 0 0 #14b8a6 !important;
+  background-image: linear-gradient(90deg, rgba(20, 184, 166, 0.08), transparent 45%) !important;
+}
+
+.sf-card[data-sf="highlighted"][data-sf-surface="youtubeHome"] {
+  box-shadow: 0 0 0 2px rgba(20, 184, 166, 0.85) !important;
+  background-image: none !important;
+  border-radius: 14px;
+}
+
+/* Hidden: X posts and sidebar videos collapse to a slim bar; home-grid cards keep their size so the grid holds. */
+.sf-card[data-sf="hidden"][data-sf-surface="xPosts"],
+.sf-card[data-sf="hidden"][data-sf-surface="youtubeSidebar"] {
+  box-sizing: border-box !important;
+  max-height: 44px !important;
+  min-height: 44px !important;
+  padding-block: 0 !important;
+  overflow: hidden !important;
+}
+
+.sf-card[data-sf="hidden"] > :not(.sf-bar) {
+  visibility: hidden !important;
+}
+
+.sf-bar {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-sizing: border-box;
+  padding: 0 16px;
+  color: inherit;
+  font: 500 13px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: rgba(127, 127, 127, 0.06);
+  cursor: default;
+}
+
+.sf-card[data-sf-surface="youtubeHome"] > .sf-bar {
+  flex-direction: column;
+  justify-content: center;
+  border: 1px dashed rgba(127, 127, 127, 0.35);
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+.sf-bar-label {
+  opacity: 0.6;
+}
+
+.sf-bar-show {
+  all: unset;
+  box-sizing: border-box;
+  padding: 5px 12px;
+  border: 1px solid rgba(127, 127, 127, 0.4);
+  border-radius: 999px;
+  color: inherit;
+  font: 600 12px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  cursor: pointer;
+}
+
+.sf-bar-show:hover {
+  background: rgba(127, 127, 127, 0.14);
+}
+
+.sf-bar-show:focus-visible {
+  outline: 2px solid #6d5ef6;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-card[data-sf="pending"]::after {
+    animation: none;
+  }
+}
