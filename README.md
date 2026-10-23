@@ -1,19 +1,21 @@
 <p align="center"><img src="extension/icons/icon-128.png" width="72" height="72" alt=""></p>
 <h1 align="center">Signal Feed</h1>
-<p align="center">Fold away ragebait, empty hype and engagement bait on X and YouTube before you scroll to it, and highlight what you care about.</p>
+<p align="center">Your X and YouTube feeds, minus the bait. Ragebait, empty hype and engagement bait fold away before you scroll to them, each with the reason why.</p>
 
-<p align="center"><img src="docs/screenshots/feed.png" width="860" alt="A feed where bait posts are folded into slim 'Hidden by Signal Feed' bars and useful posts are marked with a teal edge"></p>
+<p align="center"><img src="docs/screenshots/feed.png" width="860" alt="An X feed in dark mode: three posts folded into slim 'Hidden' bars tagged Low effort, Low effort and Spammy promo, and a highlighted post about open-source RL infrastructure"></p>
 
 ## What it does
 
-- **Hides feed noise.** Posts and videos that match your hide list fold into a slim bar. **Show** brings any of them back.
-- **Highlights what you want.** Type a few topics ("AI research, climbing") and matching posts get a teal edge.
-- **Decides ahead of you.** Posts are checked in batches about two screens before you reach them, so you rarely see anything flash.
-- **One key, three choices.** Paste an OpenRouter key, then pick what to hide (chips plus free text), what to highlight, and how strict to be.
-- **Alt+Shift+S** turns it on or off from any tab. The toolbar badge shows how many posts are hidden on the page.
+- **Folds feed noise, and says why.** Posts that match your hide list collapse to a slim bar with the reason ("Ragebait", "Engagement bait", …). On YouTube, cards keep their place so the grid doesn't jump.
+- **Undo is one click.** Show opens a post; Hide again folds it back. Always show @handle (or a YouTube channel) keeps people you trust out of it for good. Show all opens everything on the page from the toolbar popup.
+- **Highlights what you came for.** Type a few topics ("AI research, climbing") and matching posts get a teal edge.
+- **Decides ahead of you.** Posts are checked in batches about two screens before you reach them.
+- **One key, three choices.** Paste an OpenRouter key, then pick what to hide (chips plus your own words), what to highlight, and Relaxed, Balanced or Strict.
+- **Shows what it costs.** The popup has a 7-day spend chart, today's count, the total and the most common reasons, from the cost OpenRouter reports for each request.
+- **Alt+Shift+S** turns it on or off from any tab. The toolbar badge counts the hidden posts on the page.
 - **Fails open.** If OpenRouter is down or the key runs out, your feed is shown as it is and the badge shows `!`.
 
-Works on the X home timeline, profiles and threads, the YouTube home grid and the sidebar next to a video.
+Works on the X timeline, profiles and threads (never the post you opened), the YouTube home page and the sidebar next to a video.
 
 ## Install
 
@@ -28,62 +30,78 @@ Works on the X home timeline, profiles and threads, the YouTube home grid and th
 
 Works in Chrome, Edge, Brave and other Chromium browsers.
 
+## How well it works
+
+Measured on a real X feed with the default hide list (details and method in [eval/](eval/README.md)):
+
+| Strictness | Of the posts it hides, wanted hidden | Of the posts you'd hide, caught | Good posts hidden by mistake |
+|---|---|---|---|
+| Relaxed | 100% | 70% | 0% |
+| **Balanced** (default) | **96%** | **85%** | **3%** |
+| Strict | 79% | 96% | 19% |
+
+The reason on a folded post matches the hand label 36 of 38 times on X and 18 of 20 on YouTube.
+
 ## Cost and speed
 
-Signal Feed uses your own OpenRouter key to call [Jev](https://openrouter.ai/typesafe/jev-1.13), TypeSafe's fast judgment model. Each post gets one yes-or-no question ("should this be hidden under your policy?"), plus one more if you set topics to highlight.
+Signal Feed uses your own OpenRouter key to call [Jev](https://openrouter.ai/typesafe/jev-1.13), TypeSafe's fast judgment model, which answers with a probability rather than text. Each post gets one yes-or-no question ("should this be hidden under your hide list?"), one more if you set topics to highlight, and hidden posts get a short follow-up for the reason.
 
 | | Per 1,000 posts | Per batch of 20 |
 |---|---|---|
-| Hide only (default) | about $0.015 | about 0.5 s |
-| Hide and highlight | about $0.02 | about 0.5 s |
+| Hide (default) | about $0.02 | about 0.5 s |
+| Hide and highlight | about $0.03 | about 0.5 s |
 
-Measured with `node test/bench.mjs` on 23 Oct 2026. Answers are cached for the browser session, so scrolling back up or reopening a post costs nothing.
+Measured with `node eval/run.mjs` on 23 Oct 2026. Answers are cached for the browser session, so scrolling back up costs nothing. The popup shows exactly what you've spent.
 
 ## Settings
 
 | Setting | What it does |
 |---|---|
-| **Hide** | Chips for common noise (on by default: ragebait, engagement bait, empty hype, low effort, spammy promo; off: pure entertainment, politics, sports), plus free text for anything else. The text is applied literally, so "anything except AI" works. |
+| **Hide** | Chips for common noise (on by default: ragebait, engagement bait, empty hype, low effort, spammy promo; off: pure entertainment, politics, sports), plus your own words. Your words are applied literally, so "anything except AI" works. |
 | **Highlight** | Topics you want more of. Leave it empty to only hide. |
-| **Strictness** | Relaxed hides only clear cases; Strict hides more borderline posts. |
+| **Strictness** | Relaxed hides only clear cases; Strict also hides borderline posts. |
 | **Sites** | Turn X or YouTube off separately. |
+| **Always shown** | Accounts and channels you chose to always show. Remove any of them here. |
 
 Change the shortcut at `chrome://extensions/shortcuts`.
 
 ## Privacy
 
-No servers, no analytics, no tracking. The text of the posts and video titles in your feed goes to OpenRouter (and from there to TypeSafe, which runs Jev) to be judged, together with your hide list and topics. Nothing else leaves your browser: no usernames, no cookies, no browsing history. Your key is stored in this browser profile and is sent only to OpenRouter. Full details: [PRIVACY.md](PRIVACY.md).
+No servers, no analytics, no tracking. The text of the posts and video titles in your feed goes to OpenRouter (and from there to TypeSafe, which runs Jev) to be judged, together with your hide list and topics. Nothing else leaves your browser: no usernames, no cookies, no browsing history. The "Always show" list, your activity numbers and your key stay in this browser profile; the key is sent only to OpenRouter. Full details: [PRIVACY.md](PRIVACY.md).
 
 ## How it works
 
 ```
 X / YouTube page                       service worker                      OpenRouter
 content script ──batches of 20────────> cache (session) ──HTTPS─────────> /api/alpha/decisions
-finds posts ~2 screens ahead            your key, retries                  Jev: one probability
-folds / highlights <──decisions──────── thresholds by strictness  <────── per question
+finds posts ~2 screens ahead            your key, retries,                 Jev: a probability
+folds / highlights, reasons <────────── thresholds, usage  <───────────── per question
 ```
 
-- `extension/src/content.js` finds posts, queues them as they come within about two screens, and folds or highlights them. Page text is sent as data, with instructions to treat it as untrusted.
-- `extension/background.js` holds the key, batches requests, caches answers for the session, retries rate limits and sets the badge.
-- `extension/src/core.js` builds the Jev request and turns probabilities into decisions. It's shared by the worker, the page script, the popup and the tests.
+- `extension/src/content.js` finds posts, queues them as they come within about two screens, and folds, highlights and labels them. It hooks only on `data-sf-*` attributes, because X rewrites a post's `class` on every re-render.
+- `extension/background.js` holds the key, batches requests, caches answers for the session, asks for reasons, records spend, retries rate limits and sets the badge.
+- `extension/src/core.js` builds the Jev requests and turns probabilities into decisions. The extension, the tests and the eval all use it.
 
 ## Development
 
 ```sh
 npm install
-npm test            # unit tests for core.js
-npm run test:e2e    # the real extension in Chrome for Testing, with live Jev calls
-npm run package     # dist/signal-feed-<version>.zip for the Chrome Web Store
+npm test             # unit tests for core.js
+npm run test:e2e     # the real extension in Chrome for Testing, with live Jev calls
+node eval/run.mjs    # calibration eval (see eval/README.md)
+npm run package      # dist/signal-feed-<version>.zip for the Chrome Web Store
 ```
 
-The end-to-end test serves fixture pages at `x.com` and `youtube.com`, so the shipped manifest is tested unchanged. It needs an OpenRouter key in `OPENROUTER_KEY` (or a file at `~/.inpage/openrouter_key`) and costs well under a cent per run. Set `CHROME` to a Chrome for Testing binary if yours lives somewhere else.
+The end-to-end test serves fixture pages at `x.com` and `youtube.com` (including X's habit of rewriting classes on hover), so the shipped manifest is tested unchanged. It and the eval need an OpenRouter key in `OPENROUTER_KEY` (or a file at `~/.inpage/openrouter_key`) and cost well under a cent per run. Set `CHROME` to a Chrome for Testing binary if yours lives somewhere else.
+
+Store images: `node store/popup-shots.mjs && node store/render.mjs` rebuilds them from the captures in `store/raw/`.
 
 Releases: bump the version in `extension/manifest.json` and `package.json`, add a `CHANGELOG.md` entry, and push a tag like `v1.0.1`. The release workflow builds the zip and drafts a GitHub release.
 
 ## Limits
 
 - Image-only posts and videos with no title text are left alone.
-- Replies inside a thread are treated like any other post. Search results and comments aren't filtered.
+- Search results and comments aren't filtered.
 - X and YouTube change their markup from time to time. If posts stop being picked up, please open an issue.
 
 ## License

@@ -8,7 +8,7 @@ Everything the developer dashboard asks for, in the order it asks. Upload `dist/
 
 **Summary** (132 characters max):
 
-> Fold away ragebait, hype and engagement bait on X and YouTube, and highlight what you care about. Uses your OpenRouter key.
+> Your X and YouTube feeds, minus the bait. Ragebait, hype and engagement bait fold away, each with the reason why.
 
 **Category:** Productivity → Tools (fallback: Social & Communication)
 
@@ -16,23 +16,28 @@ Everything the developer dashboard asks for, in the order it asks. Upload `dist/
 
 **Description:**
 
-> Signal Feed makes X and YouTube calmer. It folds away ragebait, empty hype and engagement bait before you scroll to it, and can highlight the posts and videos you actually came for.
+> Your X and YouTube feeds, minus the bait.
 >
-> HOW IT WORKS
-> • Posts are checked in small batches about two screens ahead, so noise is folded before you see it.
-> • Hidden posts collapse to a slim bar. Click Show to see any of them.
-> • Add topics you care about ("AI research, climbing") and matching posts get a subtle teal edge.
-> • The toolbar badge shows how many posts are hidden on the page.
-> • Alt+Shift+S turns it on or off from any tab.
+> Signal Feed folds away ragebait, empty hype and engagement bait before you scroll to them, and tells you why each one was hidden. Posts on the topics you care about get a subtle highlight.
+>
+> WHAT YOU GET
+> • Hidden posts collapse to a slim bar with the reason: Ragebait, Engagement bait, Empty hype, Low effort or Spammy promo.
+> • One click shows a post. Hide again if you change your mind.
+> • "Always show" for people and channels you trust.
+> • Highlights for your topics, like "AI research, climbing".
+> • Show everything on a page from the toolbar, and Alt+Shift+S to turn it on or off.
 >
 > SIMPLE TO SET UP
-> Paste an OpenRouter API key once. Then choose what to hide (chips for ragebait, engagement bait, empty hype, low-effort posts, spammy promo, pure entertainment, politics or sports, plus your own words), what to highlight, and how strict to be.
+> Paste an OpenRouter API key once. Then choose what to hide (chips, or your own words such as "anything except AI"), what to highlight, and Relaxed, Balanced or Strict.
 >
-> CHEAP AND FAST
-> Signal Feed uses Jev, TypeSafe's fast judgment model, through your own OpenRouter account. It costs about 2 cents per 1,000 posts and answers a batch of 20 posts in about half a second. Answers are cached, so scrolling back costs nothing.
+> MEASURED, NOT GUESSED
+> On a real X feed, the default setting caught 85% of the posts a person would hide, and 96% of what it hid was worth hiding. The full eval is open source.
+>
+> PENNIES, AND YOU CAN SEE THEM
+> It uses Jev, TypeSafe's fast judgment model, through your own OpenRouter account: about 2 cents per 1,000 posts, half a second per batch of 20. The popup shows what you spent this week.
 >
 > PRIVATE BY DESIGN
-> No servers, no analytics, no account with us. Only the text of feed posts and video titles goes to OpenRouter to be judged. Usernames, images, cookies and your browsing history never leave your browser. If OpenRouter is unreachable, your feed is shown exactly as it is.
+> No servers, no analytics, no account with us. Only the text of feed posts and video titles goes to OpenRouter to be judged. Usernames, images, cookies and your browsing history never leave your browser. If OpenRouter can't be reached, your feed is shown exactly as it is.
 >
 > Open source (MIT): https://github.com/harish-anumula/signal-feed
 
@@ -41,7 +46,7 @@ Everything the developer dashboard asks for, in the order it asks. Upload `dist/
 | Asset | Size | File |
 |---|---|---|
 | Store icon | 128×128 | `extension/icons/icon-128.png` |
-| Screenshots (up to 5) | 1280×800 | `store/screenshot-1.png` … `store/screenshot-3.png` |
+| Screenshots (up to 5) | 1280×800 | `store/screenshot-1.png` … `store/screenshot-4.png`, in that order |
 | Small promo tile | 440×280 | `store/promo-small.png` |
 | Marquee promo tile (optional) | 1400×560 | `store/promo-marquee.png` |
 
@@ -57,8 +62,8 @@ Everything the developer dashboard asks for, in the order it asks. Upload `dist/
 
 | Permission | Justification |
 |---|---|
-| `storage` | Stores the user's OpenRouter key and settings, and caches decisions for the browser session so the same post isn't checked twice. |
-| Host `https://x.com/*` | Reads the text of posts in the X feed and folds or highlights them in the page. |
+| `storage` | Stores the user's OpenRouter key, settings, "Always show" list and local activity totals, and caches decisions for the browser session so the same post isn't checked twice. |
+| Host `https://x.com/*` | Reads the text of posts in the X feed and folds or highlights them in the page. Reads a post's @handle locally, only to honour the user's "Always show" list. |
 | Host `https://www.youtube.com/*` | Reads video titles on the YouTube home page and sidebar and folds or highlights them in the page. |
 | Host `https://openrouter.ai/*` | Checks the user's API key and sends feed text to the Jev model on OpenRouter, which returns the hide/highlight probabilities. |
 

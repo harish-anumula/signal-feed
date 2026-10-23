@@ -2,9 +2,11 @@
   "manifest_version": 3,
   "name": "Signal Feed",
   "version": "1.0.0",
-  "description": "Fold away ragebait, hype and engagement bait on X and YouTube, and highlight what you care about. Uses your OpenRouter key.",
+  "description": "Your X and YouTube feeds, minus the bait. Ragebait, hype and engagement bait fold away, each with the reason why.",
   "homepage_url": "https://github.com/harish-anumula/signal-feed",
-  "permissions": ["storage"],
+  "permissions": [
+    "storage"
+  ],
   "host_permissions": [
     "https://openrouter.ai/*",
     "https://x.com/*",
@@ -31,15 +33,25 @@
   },
   "commands": {
     "toggle": {
-      "suggested_key": { "default": "Alt+Shift+S" },
+      "suggested_key": {
+        "default": "Alt+Shift+S"
+      },
       "description": "Turn Signal Feed on or off"
     }
   },
   "content_scripts": [
     {
-      "matches": ["https://x.com/*", "https://www.youtube.com/*"],
-      "js": ["src/core.js", "src/content.js"],
-      "css": ["src/content.css"],
+      "matches": [
+        "https://x.com/*",
+        "https://www.youtube.com/*"
+      ],
+      "js": [
+        "src/core.js",
+        "src/content.js"
+      ],
+      "css": [
+        "src/content.css"
+      ],
       "run_at": "document_start"
     }
   ]
