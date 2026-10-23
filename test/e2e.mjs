@@ -102,6 +102,17 @@ await step('X: the toolbar badge counts the hidden posts', async () => {
   assert.equal(await badge(setup, 'x.com'), String(hidden));
 });
 
+await step('X: a hidden post stays hidden and keeps its identity (no fold/unfold loop)', async () => {
+  const ids = async () => x.$$eval('article[data-testid="tweet"]', (els) => els.map((a) => `${a.dataset.sfId}:${a.dataset.sf}`).join(' '));
+  const before = await ids();
+  for (let i = 0; i < 6; i += 1) {
+    await x.evaluate(() => document.body.appendChild(document.createElement('div')));   // page mutations trigger rescans
+    await x.waitForTimeout(250);
+  }
+  assert.equal(await ids(), before, 'posts were re-registered');
+  assert.equal(await x.locator('article[data-sf="hidden"]').filter({ hasText: 'coffee kicks in' }).count(), 1);
+});
+
 await step('X: hovering a hidden post (X re-renders it) keeps it hidden', async () => {
   const post = x.locator('article[data-sf="hidden"]').first();
   await post.hover();

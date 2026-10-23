@@ -22,7 +22,7 @@ const posts = [
   ["useful", "Climbing Coach", "@climbcoach", "Three finger-strength protocols compared over 8 weeks with 24 climbers: max hangs gained 11%, repeaters 7%, no-hangs 9% with half the skin wear. Data sheet and the session plans are public."],
   ["noise", "Giveaway Bot", "@freeprizes", "🎁 GIVEAWAY 🎁 Win a free iPhone! Follow, like, retweet and tag 3 friends. Winner in 24h!!"],
   ["useful", "Frontend Field Notes", "@fefield", "TIL: content-visibility: auto on long lists cut our initial render from 1.8 s to 0.6 s on a mid-range Android. Caveat: you need contain-intrinsic-size or the scrollbar jumps. Repro repo in replies."],
-  ["noise", "Meme Lord", "@memelord", "me when the coffee kicks in 💀💀💀 lmaooo"],
+  ["noise", "Meme Lord", "@memelord", "me when the coffee kicks in 💀💀💀 lmaooo", "split"],
   ["useful", "Infra Weekly", "@infraweekly", "Postmortem: a single misconfigured retry policy turned a 2-minute DNS blip into a 40-minute outage. Timeline, the exact config diff, and the three guardrails we added afterwards."],
   ["noise", "Engagement Farm", "@engfarm", "Reply with your age and I'll guess your salary 👇👇 (99% accurate)"],
   ["useful", "Model Lab", "@modellab", "We're open-sourcing our RL infrastructure: 8,192 concurrent sandboxes, ~1.3M rollouts in 7 days. Code, configs and the training report are on GitHub.", "video"],
@@ -39,6 +39,8 @@ for (const [kind, name, handle, text, extra] of posts) {
   a.querySelector(".name").textContent = name;
   a.querySelector(".handle").textContent = handle;
   a.querySelector('[data-testid="tweetText"]').textContent = text;
+  // Like real X: text split into spans with a hidden part, so innerText and textContent differ.
+  if (extra === "split") a.querySelector('[data-testid="tweetText"]').innerHTML = 'me when the coffee kicks in <span style="display:none">https://t.co/</span>💀💀💀 <span>lmaooo</span>';
   // X wraps every video player in placementTracking; ads get a small "Ad" label by the menu.
   if (extra === "video") a.querySelector(".body").insertAdjacentHTML("beforeend", '<div data-testid="placementTracking"><div data-testid="videoPlayer" style="height:120px;margin-top:10px;border-radius:12px;background:#0f1419"></div></div>');
   if (extra === "ad") a.querySelector('[data-testid="User-Name"]').insertAdjacentHTML("afterend", ' <span style="float:right;color:#536471">Ad</span>');

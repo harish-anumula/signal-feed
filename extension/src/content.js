@@ -432,7 +432,9 @@
 
   function xText(article) {
     const text = [...article.querySelectorAll('[data-testid="tweetText"]')]
-      .map((node) => node.innerText || node.textContent)
+      // textContent, not innerText: innerText is empty for text we've hidden (visibility: hidden) and differs from
+      // textContent on X, so the post would look "new" after folding and loop between folded and shown.
+      .map((node) => node.textContent)
       .filter(Boolean)
       .join("\nQuoted:\n");
     if (!text.trim()) return "";

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Signal Feed",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Your X and YouTube feeds, minus the bait. Ragebait, hype and engagement bait fold away, each with the reason why.",
   "homepage_url": "https://github.com/harish-anumula/signal-feed",
   "permissions": [
