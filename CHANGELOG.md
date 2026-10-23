@@ -15,4 +15,4 @@ First public release, rebuilt from the September demo.
 - Hidden X posts and sidebar videos collapse to a slim bar; YouTube home cards keep their place in the grid.
 - Fails open with backoff: on any error the feed is left as it is and checked again later.
 - Removed the demo-only parts: identity blur, hidden X sidebar and YouTube chip bar, per-surface sliders, session stats and the unused `tabs` permission.
-- Unit tests, an end-to-end test in Chrome for Testing, a calibration eval with cost and latency, and a release workflow.
+- Unit tests, an end-to-end test in Chromium, a calibration eval with cost and latency, and a release workflow.
