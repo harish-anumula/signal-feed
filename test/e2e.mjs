@@ -89,8 +89,8 @@ await step('X: noise folds, useful posts stay', async () => {
   const states = await settled(x, 'article[data-testid="tweet"]');
   const hiddenNoise = states.filter((s) => s.kind === 'noise' && s.state === 'hidden').length;
   const hiddenUseful = states.filter((s) => s.kind === 'useful' && s.state === 'hidden');
-  results.push(`     X: ${hiddenNoise}/6 noise hidden, ${hiddenUseful.length}/6 useful hidden`);
-  assert.ok(hiddenNoise >= 5, `only ${hiddenNoise}/6 noise hidden`);
+  results.push(`     X: ${hiddenNoise}/8 noise hidden, ${hiddenUseful.length}/7 useful hidden (incl. a video post and an ad)`);
+  assert.ok(hiddenNoise >= 7, `only ${hiddenNoise}/8 noise hidden`);
   assert.equal(hiddenUseful.length, 0, `useful hidden: ${hiddenUseful.map((s) => s.text).join(' | ')}`);
   const height = await x.$eval('article[data-sf="hidden"]', (el) => el.getBoundingClientRect().height);
   assert.ok(height <= 45, `folded post is ${height}px tall`);
@@ -102,12 +102,58 @@ await step('X: the toolbar badge counts the hidden posts', async () => {
   assert.equal(await badge(setup, 'x.com'), String(hidden));
 });
 
-await step('X: Show reveals the post without opening it', async () => {
+await step('X: hovering a hidden post (X re-renders it) keeps it hidden', async () => {
+  const post = x.locator('article[data-sf="hidden"]').first();
+  await post.hover();
+  await post.locator('.sf-btn').hover();
+  await x.waitForTimeout(150);
+  assert.match(await post.getAttribute('class'), /r-hover/);
+  assert.equal(await post.locator('[data-testid="tweetText"]').evaluate((el) => getComputedStyle(el).visibility), 'hidden');
+  assert.ok((await post.boundingBox()).height <= 45, 'post grew back');
+});
+
+await step('X: each bar shows its reason, lined up with the post text', async () => {
+  await x.waitForFunction(() => [...document.querySelectorAll('article[data-sf="hidden"] .sf-bar')].every((bar) => bar.querySelector('.sf-tag')), null, { timeout: 15000 });
+  const tags = await x.$$eval('article[data-sf="hidden"] .sf-tag', (els) => els.map((e) => e.textContent));
+  results.push(`     X reasons: ${tags.join(', ')}`);
+  assert.ok(tags.includes('Engagement bait') && tags.includes('Ragebait'), 'expected reasons missing');
+  const offset = await x.$eval('article[data-sf="hidden"]', (a) => Math.round(a.querySelector('.sf-label').getBoundingClientRect().left - a.querySelector('[data-testid="User-Name"]').getBoundingClientRect().left));
+  assert.ok(Math.abs(offset) <= 1, `bar text is ${offset}px off the post text`);
+});
+
+await step('X: Show reveals the post (strip with the reason), Hide again folds it, nothing opens', async () => {
   const before = await x.locator('article[data-sf="hidden"]').count();
-  await x.locator('article[data-sf="hidden"] .sf-bar-show').first().click();
+  const post = x.locator('article[data-sf="hidden"]').first();
+  const id = await post.getAttribute('data-sf-id');
+  await post.locator('.sf-btn').click();
+  const shown = x.locator(`article[data-sf-id="${id}"]`);
+  assert.equal(await shown.getAttribute('data-sf'), 'revealed');
   assert.equal(await x.locator('article[data-sf="hidden"]').count(), before - 1);
-  assert.equal(await x.locator('article[data-sf="revealed"]').count(), 1);
+  assert.ok(await shown.locator('.sf-strip .sf-tag').count(), 'strip has no reason');
+  const textTop = await shown.evaluate((a) => a.querySelector('[data-testid="tweetText"]').getBoundingClientRect().top - a.querySelector('.sf-strip').getBoundingClientRect().bottom);
+  assert.ok(textTop > 0, 'strip covers the post');
+  await shown.locator('.sf-link', { hasText: 'Hide again' }).click();
+  assert.equal(await shown.getAttribute('data-sf'), 'hidden');
   assert.equal(await x.evaluate(() => window.__clicks), 0);
+});
+
+await step('X: Always show @handle opens every post by them and remembers it', async () => {
+  const posts = x.locator('article[data-testid="tweet"]').filter({ has: x.locator('a[href="/replyguy"]') });
+  assert.equal(await posts.count(), 2);
+  await x.waitForFunction(() => [...document.querySelectorAll('article[data-testid="tweet"]')].filter((a) => a.querySelector('a[href="/replyguy"]')).every((a) => a.dataset.sf === 'hidden'));
+  await posts.first().locator('.sf-btn').click();
+  await posts.first().locator('.sf-link', { hasText: 'Always show @replyguy' }).click();
+  await x.waitForFunction(() => [...document.querySelectorAll('article[data-testid="tweet"]')].filter((a) => a.querySelector('a[href="/replyguy"]')).every((a) => !a.dataset.sf));
+  assert.deepEqual(await setup.evaluate(async () => (await chrome.storage.local.get('allow')).allow), { x: ['@replyguy'] });
+  await setup.evaluate(() => chrome.storage.local.set({ allow: { x: [] } }));
+  await x.waitForFunction(() => [...document.querySelectorAll('article[data-testid="tweet"]')].filter((a) => a.querySelector('a[href="/replyguy"]')).every((a) => a.dataset.sf === 'hidden'), null, { timeout: 15000 });
+});
+
+await step('X: Show all (from the popup) opens every hidden post on the page', async () => {
+  await setup.evaluate(async () => { const t = (await chrome.tabs.query({})).find((t) => t.url?.includes('x.com')); await chrome.tabs.sendMessage(t.id, { type: 'show-all' }); });
+  await x.waitForTimeout(200);
+  assert.equal(await x.locator('article[data-sf="hidden"]').count(), 0);
+  assert.ok(await x.locator('article[data-sf="revealed"]').count() >= 7);
 });
 
 await step('X: interests highlight the useful posts', async () => {
@@ -118,7 +164,18 @@ await step('X: interests highlight the useful posts', async () => {
   results.push(`     X: highlighted ${lit.length}: ${lit.map((s) => s.kind).join(', ')}`);
   assert.ok(lit.length >= 3, `only ${lit.length} highlighted`);
   assert.ok(lit.every((s) => s.kind === 'useful'), 'noise was highlighted');
+  // reasons survive the change of interests (cached by hide list), so every bar has its tag again
+  await x.waitForFunction(() => [...document.querySelectorAll('article[data-sf="hidden"] .sf-bar')].every((bar) => bar.querySelector('.sf-tag')), null, { timeout: 5000 });
   await x.screenshot({ path: path.join(OUT, 'x-feed.png') });
+});
+
+await step('X: the post you opened is never folded, its replies are', async () => {
+  const thread = await ctx.newPage();
+  await thread.goto('https://x.com/replyguy/status/1');
+  const states = await settled(thread, 'article[data-testid="tweet"]:not(:first-child)');
+  assert.ok(states.some((s) => s.state === 'hidden'), 'no reply folded');
+  assert.equal(await thread.locator('article[data-testid="tweet"]').first().getAttribute('data-sf'), null);
+  await thread.close();
 });
 
 await step('YouTube: home and sidebar fold the clickbait', async () => {
@@ -136,7 +193,7 @@ await step('YouTube: home and sidebar fold the clickbait', async () => {
 
 await step('turning it off restores the feed and marks the badge', async () => {
   await setSettings(setup, { enabled: false });
-  await x.waitForFunction(() => !document.querySelector('.sf-card, .sf-bar'));
+  await x.waitForFunction(() => !document.querySelector('.sf-bar, .sf-strip, [data-sf]'));
   await x.waitForTimeout(400);
   assert.equal(await badge(setup, 'x.com'), 'off');
   await setSettings(setup, { enabled: true });
@@ -154,6 +211,16 @@ await step('a dead key fails open: the feed stays, the badge warns', async () =>
   await popup.goto(`chrome-extension://${extId}/popup/popup.html`);
   await popup.waitForSelector('#alert:not([hidden])');
   assert.match(await popup.textContent('#alert'), /rejected the key/);
+  await popup.close();
+});
+
+await step('popup activity shows today\'s checks, hides and spend', async () => {
+  const popup = await ctx.newPage();
+  await popup.goto(`chrome-extension://${extId}/popup/popup.html`);
+  await popup.waitForFunction(() => /hidden of \d+ checked/.test(document.querySelector('#act-today').textContent) && !/ 0 checked/.test(document.querySelector('#act-today').textContent), null, { timeout: 5000 });
+  const line = await popup.textContent('#act-today');
+  results.push(`     popup: ${line.trim()} | ${(await popup.textContent('#act-total')).trim()}`);
+  assert.match(line, /\$0\.0\d\d|<\$0\.001/);
   await popup.close();
 });
 

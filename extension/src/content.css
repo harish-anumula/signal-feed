@@ -1,11 +1,13 @@
-/* Signal Feed on X and YouTube. Neutral, translucent colours so it sits well on light, dim and dark themes. */
+/* Signal Feed on X and YouTube. Neutral, translucent colours so it sits well on light, dim and dark themes.
+   Hooks are data-sf-* attributes only: X (React) rewrites a post's class attribute on every re-render, e.g. on hover.
+   --sf-indent lines our text up with the post's own text column (set per post on X; the thumbnail edge on YouTube). */
 
-.sf-card {
+[data-sf-surface] {
   position: relative !important;
 }
 
 /* Waiting for Jev (usually done before the card scrolls into view). */
-.sf-card[data-sf="pending"]::after {
+[data-sf-surface][data-sf="pending"]::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -24,20 +26,20 @@
 }
 
 /* Highlighted: a thin accent on the left edge (X, sidebar) or a ring (YouTube home grid). */
-.sf-card[data-sf="highlighted"] {
+[data-sf-surface][data-sf="highlighted"] {
   box-shadow: inset 3px 0 0 #14b8a6 !important;
   background-image: linear-gradient(90deg, rgba(20, 184, 166, 0.08), transparent 45%) !important;
 }
 
-.sf-card[data-sf="highlighted"][data-sf-surface="youtubeHome"] {
+[data-sf="highlighted"][data-sf-surface="youtubeHome"] {
   box-shadow: 0 0 0 2px rgba(20, 184, 166, 0.85) !important;
   background-image: none !important;
   border-radius: 14px;
 }
 
 /* Hidden: X posts and sidebar videos collapse to a slim bar; home-grid cards keep their size so the grid holds. */
-.sf-card[data-sf="hidden"][data-sf-surface="xPosts"],
-.sf-card[data-sf="hidden"][data-sf-surface="youtubeSidebar"] {
+[data-sf="hidden"][data-sf-surface="xPosts"],
+[data-sf="hidden"][data-sf-surface="youtubeSidebar"] {
   box-sizing: border-box !important;
   max-height: 44px !important;
   min-height: 44px !important;
@@ -45,60 +47,145 @@
   overflow: hidden !important;
 }
 
-.sf-card[data-sf="hidden"] > :not(.sf-bar) {
+[data-sf-surface][data-sf="hidden"] > :not(.sf-bar) {
   visibility: hidden !important;
 }
 
-.sf-bar {
+/* Shown after being hidden: a one-line strip above the post, which moves down to make room. */
+[data-sf-surface][data-sf="revealed"] {
+  padding-top: 30px !important;
+}
+
+.sf-bar,
+.sf-strip {
   position: absolute;
-  inset: 0;
   z-index: 3;
+  left: 0;
+  right: 0;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 12px;
   box-sizing: border-box;
-  padding: 0 16px;
+  padding: 0 16px 0 var(--sf-indent, 16px);
   color: inherit;
   font: 500 13px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: rgba(127, 127, 127, 0.06);
+  letter-spacing: normal;
+  text-align: left;
   cursor: default;
 }
 
-.sf-card[data-sf-surface="youtubeHome"] > .sf-bar {
-  flex-direction: column;
-  justify-content: center;
-  border: 1px dashed rgba(127, 127, 127, 0.35);
-  border-radius: 12px;
-  font-size: 14px;
+.sf-bar {
+  top: 0;
+  bottom: 0;
+  background: rgba(127, 127, 127, 0.06);
 }
 
-.sf-bar-label {
+.sf-strip {
+  top: 0;
+  height: 30px;
+  font-size: 12px;
+}
+
+[data-sf-surface^="youtube"] > .sf-bar,
+[data-sf-surface^="youtube"] > .sf-strip {
+  padding-left: var(--sf-indent, 2px);
+  padding-right: 4px;
+}
+
+.sf-label {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.sf-label-text {
   opacity: 0.6;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.sf-bar-show {
+.sf-tag {
+  flex: none;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(139, 124, 246, 0.16);
+  color: #8b7cf6;
+  font-size: 11.5px;
+  font-weight: 650;
+  line-height: 1.2;
+}
+
+.sf-actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 14px;
+}
+
+.sf-btn,
+.sf-link {
   all: unset;
   box-sizing: border-box;
-  padding: 5px 12px;
-  border: 1px solid rgba(127, 127, 127, 0.4);
-  border-radius: 999px;
+  flex: none;
   color: inherit;
   font: 600 12px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   cursor: pointer;
 }
 
-.sf-bar-show:hover {
+.sf-btn {
+  padding: 5px 12px;
+  border: 1px solid rgba(127, 127, 127, 0.4);
+  border-radius: 999px;
+}
+
+.sf-btn:hover {
   background: rgba(127, 127, 127, 0.14);
 }
 
-.sf-bar-show:focus-visible {
-  outline: 2px solid #6d5ef6;
+.sf-link {
+  color: #8b7cf6;
+}
+
+.sf-link:hover {
+  text-decoration: underline;
+}
+
+.sf-btn:focus-visible,
+.sf-link:focus-visible {
+  outline: 2px solid #8b7cf6;
   outline-offset: 2px;
 }
 
+/* YouTube home cards keep their size: the bar fills the card, centred, like an empty tile. */
+[data-sf-surface="youtubeHome"] > .sf-bar {
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 12px;
+  border: 1px dashed rgba(127, 127, 127, 0.35);
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+[data-sf-surface="youtubeHome"] > .sf-bar .sf-label {
+  flex: none;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Narrow sidebar: keep "Always show …" from crowding out "Hide again". */
+[data-sf-surface="youtubeSidebar"] > .sf-strip .sf-link:first-child:not(:last-child) {
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .sf-card[data-sf="pending"]::after {
+  [data-sf-surface][data-sf="pending"]::after {
     animation: none;
   }
 }

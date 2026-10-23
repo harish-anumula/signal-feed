@@ -46,6 +46,10 @@ chrome.runtime.onMessage.addListener((message, sender, reply) => {
     chrome.action.setTitle({ tabId, title });
     return false;
   }
+  if (message.type === "reasons") {
+    reasons(Array.isArray(message.items) ? message.items : []).then(reply, () => reply({ ok: false }));
+    return true;
+  }
   if (message.type === "save-key") {
     saveKey(message.key).then(reply, (error) => reply({ ok: false, error: friendlyError(error) }));
     return true;
@@ -57,24 +61,29 @@ chrome.runtime.onMessage.addListener((message, sender, reply) => {
   return false;
 });
 
-async function classify(items) {
-  items = items
+function validItems(items) {
+  return items
     .filter((item) => item && typeof item.id === "string" && typeof item.content === "string" && typeof item.surface === "string")
     .slice(0, 20);
+}
+
+async function classify(items) {
+  items = validItems(items);
   if (!items.length) return { ok: true, decisions: [] };
   const { settings: saved, apiKey } = await chrome.storage.local.get(["settings", "apiKey"]);
   const settings = SignalFeed.mergeSettings(saved);
   if (!settings.enabled) return { ok: true, decisions: [] };
   if (!apiKey) return { ok: false, error: "Add your OpenRouter key in Signal Feed." };
 
-  const { decisionCache: cache = {} } = await chrome.storage.session.get("decisionCache");
+  const cache = await getCache();
   const decisions = [];
   const missing = [];
   for (const item of items) {
     const key = SignalFeed.cacheKey(item, settings);
-    if (cache[key]) {
-      cache[key].usedAt = Date.now();
-      decisions.push({ id: item.id, ...cache[key].p, state: SignalFeed.decide(item.surface, cache[key].p, settings) });
+    const entry = cache[key];
+    if (entry) {
+      entry.usedAt = Date.now();
+      decisions.push({ id: item.id, ...entry.p, reason: cache[SignalFeed.reasonKey(item, settings)]?.reason || null, state: SignalFeed.decide(item.surface, entry.p, settings) });
     } else {
       missing.push({ item, key });
     }
@@ -82,15 +91,51 @@ async function classify(items) {
 
   if (missing.length) {
     const fresh = await judge(missing.map((m) => m.item), settings, apiKey);
+    let hidden = 0;
     fresh.forEach((p, i) => {
       const { item, key } = missing[i];
       cache[key] = { p, usedAt: Date.now() };
-      decisions.push({ id: item.id, ...p, state: SignalFeed.decide(item.surface, p, settings) });
+      const state = SignalFeed.decide(item.surface, p, settings);
+      if (state === "hidden") hidden += 1;
+      decisions.push({ id: item.id, ...p, reason: cache[SignalFeed.reasonKey(item, settings)]?.reason || null, state });
     });
-    trimCache(cache);
-    await chrome.storage.session.set({ decisionCache: cache, lastError: null });
+    recordUsage({ checked: missing.length, hidden });
+    saveCache();
+    await chrome.storage.session.set({ lastError: null });
   }
   return { ok: true, decisions };
+}
+
+// Which category each hidden post falls under, asked only for hidden posts and cached with their decision.
+async function reasons(items) {
+  items = validItems(items);
+  const { settings: saved, apiKey } = await chrome.storage.local.get(["settings", "apiKey"]);
+  const settings = SignalFeed.mergeSettings(saved);
+  if (!items.length || !apiKey) return { ok: true, reasons: {} };
+  const cache = await getCache();
+  const out = {};
+  const missing = [];
+  for (const item of items) {
+    const key = SignalFeed.reasonKey(item, settings);
+    if (cache[key]?.reason) out[item.id] = cache[key].reason;
+    else missing.push({ item, key });
+  }
+  if (missing.length) {
+    const payload = SignalFeed.buildReasonPayload(missing.map((m) => m.item), settings);
+    const criteria = Object.keys(payload.questions.reason_0.criteria);
+    // With a single category there is nothing to ask.
+    const found = criteria.length === 1
+      ? missing.map(() => criteria[0])
+      : SignalFeed.parseReasons(missing.map((m) => m.item), payload, await request(payload, apiKey));
+    found.forEach((reason, i) => {
+      if (!reason) return;
+      out[missing[i].item.id] = reason;
+      cache[missing[i].key] = { reason, usedAt: Date.now() };
+    });
+    recordUsage({ reasons: found.filter(Boolean) });
+    saveCache();
+  }
+  return { ok: true, reasons: out };
 }
 
 // The same batch asked twice at once (two tabs, a quick re-scan) shares one request.
@@ -137,7 +182,11 @@ async function request(payload, apiKey) {
     } finally {
       clearTimeout(timer);
     }
-    if (response.ok) return response.json();
+    if (response.ok) {
+      const body = await response.json();
+      recordUsage({ cost: Number(body.usage?.cost) || 0 });
+      return body;
+    }
     const retryable = [408, 429, 500, 502, 503, 529].includes(response.status);
     if (!retryable || attempt >= 2) throw new HttpError(response.status, (await response.text()).slice(0, 200));
     const after = Number(response.headers.get("retry-after"));
@@ -181,11 +230,40 @@ function friendlyError(error) {
   return String(error?.message || error || "Something went wrong.").slice(0, 200);
 }
 
-function trimCache(cache) {
-  const entries = Object.entries(cache);
-  if (entries.length <= CACHE_LIMIT) return;
-  entries.sort((a, b) => b[1].usedAt - a[1].usedAt);
-  for (const [key] of entries.slice(CACHE_LIMIT)) delete cache[key];
+// Decisions for this browser session, kept in memory and written back shortly after each change, so
+// requests from several tabs at once don't overwrite each other's answers.
+let cachePromise = null;
+let cacheTimer = null;
+
+function getCache() {
+  cachePromise ||= chrome.storage.session.get("decisionCache").then(({ decisionCache }) => decisionCache || {});
+  return cachePromise;
+}
+
+function saveCache() {
+  clearTimeout(cacheTimer);
+  cacheTimer = setTimeout(async () => {
+    const cache = await getCache();
+    const entries = Object.entries(cache);
+    if (entries.length > CACHE_LIMIT) {
+      entries.sort((a, b) => b[1].usedAt - a[1].usedAt);
+      for (const [key] of entries.slice(CACHE_LIMIT)) delete cache[key];
+    }
+    chrome.storage.session.set({ decisionCache: cache });
+  }, 300);
+}
+
+// Spend and activity for the popup: per day for 30 days, plus running totals. Exact cost from OpenRouter.
+let usagePromise = null;
+let usageTimer = null;
+
+function recordUsage({ cost = 0, checked = 0, hidden = 0, reasons = [] }) {
+  usagePromise ||= chrome.storage.local.get("usage").then(({ usage }) => SignalFeed.emptyUsage(usage));
+  usagePromise.then((usage) => {
+    SignalFeed.addUsage(usage, SignalFeed.localDay(), { cost, checked, hidden, reasons });
+    clearTimeout(usageTimer);
+    usageTimer = setTimeout(() => chrome.storage.local.set({ usage }), 500);
+  });
 }
 
 function wait(ms) {

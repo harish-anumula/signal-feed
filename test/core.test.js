@@ -18,28 +18,29 @@ test("mergeSettings keeps defaults and drops unknown or malformed values", () =>
   assert.equal(Core.mergeSettings({ interests: "x".repeat(1000) }).interests.length, 300);
 });
 
-test("hidePolicy joins chips and free text, and is empty when nothing is picked", () => {
+test("hidePolicy joins the picked definitions and the user's rule, and is empty when nothing is picked", () => {
   const s = Core.mergeSettings({ hide: ["politics"], hideExtra: "crypto" });
-  assert.match(Core.hidePolicy(s), /^politics.*; crypto$/);
+  assert.match(Core.hidePolicy(s), /^Politics: .* The user's own rule: crypto$/);
   assert.equal(Core.hidePolicy(Core.mergeSettings({ hide: [], hideExtra: "" })), "");
 });
 
-test("thresholds are per surface and shift with strictness", () => {
-  const balanced = Core.mergeSettings();
-  assert.equal(Core.thresholds("xPosts", balanced).hide, 0.6);
-  assert.equal(Core.thresholds("youtubeHome", balanced).hide, 0.5);
-  assert.equal(Core.thresholds("youtubeSidebar", balanced).hide, 0.7);
-  assert.ok(Math.abs(Core.thresholds("xPosts", Core.mergeSettings({ strictness: "strict" })).hide - 0.45) < 1e-9);
-  assert.ok(Math.abs(Core.thresholds("youtubeSidebar", Core.mergeSettings({ strictness: "relaxed" })).hide - 0.85) < 1e-9);
+test("thresholds come from the calibrated table, per surface and strictness", () => {
+  for (const surface of ["xPosts", "youtubeHome", "youtubeSidebar"]) {
+    const [r, b, s] = Core.STRICTNESS.map((strictness) => Core.thresholds(surface, Core.mergeSettings({ strictness })).hide);
+    assert.ok(r > b && b > s, `${surface}: relaxed > balanced > strict`);
+  }
+  assert.equal(Core.thresholds("xPosts", Core.mergeSettings()).hide, 0.5);
+  assert.ok(Core.thresholds("youtubeSidebar", Core.mergeSettings()).hide > Core.thresholds("youtubeHome", Core.mergeSettings()).hide);
 });
 
 test("decide: hide wins over highlight, and missing answers never trigger", () => {
   const s = Core.mergeSettings();
-  assert.equal(Core.decide("xPosts", { hide: 0.61, show: 0.95 }, s), "hidden");
+  assert.equal(Core.decide("xPosts", { hide: 0.51, show: 0.95 }, s), "hidden");
   assert.equal(Core.decide("youtubeHome", { hide: 0.49, show: 0.8 }, s), "highlighted");
-  assert.equal(Core.decide("youtubeSidebar", { hide: 0.65, show: 0.5 }, s), "normal");
+  assert.equal(Core.decide("youtubeSidebar", { hide: 0.55, show: 0.5 }, s), "normal");
   assert.equal(Core.decide("xPosts", {}, s), "normal");
-  assert.equal(Core.decide("xPosts", { hide: 0.5 }, Core.mergeSettings({ strictness: "strict" })), "hidden");
+  assert.equal(Core.decide("xPosts", { hide: 0.45 }, Core.mergeSettings({ strictness: "strict" })), "hidden");
+  assert.equal(Core.decide("xPosts", { hide: 0.65 }, Core.mergeSettings({ strictness: "relaxed" })), "normal");
 });
 
 test("payload asks only the questions that are switched on", () => {
@@ -88,6 +89,46 @@ test("cache key changes with content and policy, not with strictness", () => {
   assert.notEqual(a, Core.cacheKey(item, Core.mergeSettings({ interests: "cooking" })));
   assert.notEqual(a, Core.cacheKey(item, Core.mergeSettings({ hide: ["politics"] })));
   assert.equal(a, Core.cacheKey(item, Core.mergeSettings({ strictness: "strict" })));
+});
+
+test("an exception rule tells Jev to read the allowed topic broadly", () => {
+  const plain = Core.buildPayload([{ surface: "xPosts", content: "x" }], Core.mergeSettings());
+  assert.doesNotMatch(plain.questions.hide_0.instructions.join(" "), /read X broadly/);
+  const rule = Core.buildPayload([{ surface: "xPosts", content: "x" }], Core.mergeSettings({ hideExtra: "anything except AI" }));
+  assert.match(rule.questions.hide_0.instructions.join(" "), /read X broadly/);
+});
+
+test("reasons: one choice per item over the picked categories, parsed back to ids", () => {
+  const items = [{ surface: "xPosts", content: "a" }, { surface: "xPosts", content: "b" }];
+  const s = Core.mergeSettings({ hide: ["ragebait", "bait"], hideExtra: "crypto" });
+  const payload = Core.buildReasonPayload(items, s);
+  assert.deepEqual(Object.keys(payload.questions.reason_0.criteria), ["ragebait", "bait", "custom"]);
+  assert.equal(payload.questions.reason_1.type, "choice");
+  const parsed = Core.parseReasons(items, payload, { answers: { reason_0: { choice: "bait" }, reason_1: { choice: "politics" } } });
+  assert.deepEqual(parsed, ["bait", null]);
+  assert.equal(Core.reasonLabel("bait"), "Engagement bait");
+  assert.equal(Core.reasonLabel("custom"), "Your rule");
+  assert.equal(Core.reasonLabel("nope"), null);
+});
+
+test("usage: days add up, totals persist, old days drop after 30, and the week summary fills gaps", () => {
+  const u = Core.emptyUsage();
+  Core.addUsage(u, "2026-10-20", { cost: 0.01, checked: 100, hidden: 30, reasons: ["ragebait", "ragebait", "bait"] });
+  Core.addUsage(u, "2026-10-22", { cost: 0.02, checked: 50, hidden: 10 });
+  Core.addUsage(u, "2026-10-22", { cost: 0.005, reasons: ["bait"] });
+  assert.equal(u.days["2026-10-22"].checked, 50);
+  assert.ok(Math.abs(u.total.cost - 0.035) < 1e-12);
+  const week = Core.summarizeUsage(u, new Date(2026, 9, 22));
+  assert.equal(week.days.length, 7);
+  assert.equal(week.days[6].day, "2026-10-22");
+  assert.equal(week.days[5].cost, 0);
+  assert.equal(week.week.hidden, 40);
+  assert.deepEqual(week.topReasons.map((r) => [r.id, r.share]), [["ragebait", 0.5], ["bait", 0.5]]);
+  for (let d = 1; d <= 35; d += 1) Core.addUsage(u, `2026-11-${String(d).padStart(2, "0")}`, { cost: 0.001 });
+  assert.equal(Object.keys(u.days).length, 30);
+  assert.equal(Core.formatCost(0), "$0");
+  assert.equal(Core.formatCost(0.0004), "<$0.001");
+  assert.equal(Core.formatCost(0.0123), "$0.012");
 });
 
 test("cleanKey strips env-var prefixes and quotes", () => {

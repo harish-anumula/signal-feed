@@ -2,3 +2,5 @@ node_modules/
 test/out/
 .DS_Store
 dist/
+eval/private/
+eval/out/

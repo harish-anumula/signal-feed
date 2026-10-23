@@ -13,10 +13,12 @@
   async function init() {
     document.body.classList.toggle("is-welcome", welcome);
     $(".welcome").hidden = !welcome;
-    const stored = await chrome.storage.local.get(["settings", "apiKey"]);
+    const stored = await chrome.storage.local.get(["settings", "apiKey", "allow", "usage"]);
     settings = SignalFeed.mergeSettings(stored.settings);
     buildChips();
     render();
+    renderAllow(stored.allow);
+    renderActivity(stored.usage);
     showKeyState(stored.apiKey);
     wire();
     refreshStatus();
@@ -99,8 +101,12 @@
     $("#site-youtube").addEventListener("change", (event) => { settings.sites.youtube = event.target.checked; save(); });
     $("#key-form").addEventListener("submit", saveKey);
     $("#change-key").addEventListener("click", () => showKeyState(null, true));
+    $("#show-all").addEventListener("click", showAllOnPage);
     chrome.storage.onChanged.addListener((changes, area) => {
-      if (area !== "local" || !changes.settings) return;
+      if (area !== "local") return;
+      if (changes.allow) renderAllow(changes.allow.newValue);
+      if (changes.usage) renderActivity(changes.usage.newValue);
+      if (!changes.settings) return;
       settings = SignalFeed.mergeSettings(changes.settings.newValue);
       render();
       refreshStatus();
@@ -149,6 +155,68 @@
     if (editing || !saved) $("#key").focus();
   }
 
+  // Accounts and channels the user chose to always show, each removable.
+  function renderAllow(allow) {
+    const box = $("#allow");
+    box.replaceChildren();
+    const entries = ["x", "youtube"].flatMap((site) => (Array.isArray(allow?.[site]) ? allow[site] : []).map((key) => ({ site, key })));
+    $("#allow-card").hidden = !entries.length;
+    for (const { site, key } of entries) {
+      const chip = document.createElement("span");
+      chip.className = "allow-chip";
+      const mark = document.createElement("span");
+      mark.className = "site-mark";
+      mark.textContent = site === "x" ? "X" : "YT";
+      const name = document.createElement("span");
+      name.textContent = key.startsWith("/channel/") ? "channel" : key;
+      const remove = document.createElement("button");
+      remove.type = "button";
+      remove.textContent = "×";
+      remove.title = `Stop always showing ${key}`;
+      remove.setAttribute("aria-label", remove.title);
+      remove.addEventListener("click", async () => {
+        const { allow: saved = {} } = await chrome.storage.local.get("allow");
+        await chrome.storage.local.set({ allow: { ...saved, [site]: (saved[site] || []).filter((k) => k !== key) } });
+      });
+      chip.append(mark, name, remove);
+      box.appendChild(chip);
+    }
+  }
+
+  // Spend from OpenRouter's own cost reports: a 7-day bar chart, today, the week and the total.
+  function renderActivity(saved) {
+    const u = SignalFeed.summarizeUsage(saved);
+    const spark = $("#spark");
+    spark.replaceChildren();
+    const max = Math.max(...u.days.map((d) => d.cost), 0.0001);
+    u.days.forEach((d, i) => {
+      const col = document.createElement("div");
+      col.className = `col${i === u.days.length - 1 ? " today" : ""}`;
+      col.title = `${d.day}: ${SignalFeed.formatCost(d.cost)}, ${d.hidden} hidden of ${d.checked} checked`;
+      const bar = document.createElement("div");
+      bar.className = "bar";
+      bar.style.height = `${Math.round((d.cost / max) * 100)}%`;
+      const label = document.createElement("span");
+      label.textContent = d.weekday;
+      col.append(bar, label);
+      spark.appendChild(col);
+    });
+    spark.setAttribute("aria-label", `Spend over the last 7 days: ${SignalFeed.formatCost(u.week.cost)}`);
+    const bold = (text) => Object.assign(document.createElement("b"), { textContent: text });
+    $("#act-week").replaceChildren("7 days ", bold(SignalFeed.formatCost(u.week.cost)));
+    $("#act-today").replaceChildren("Today ", bold(`${u.today.hidden} hidden`), ` of ${u.today.checked} checked · `, bold(SignalFeed.formatCost(u.today.cost)));
+    const since = new Date(`${u.since}T00:00`).toLocaleDateString("en", { day: "numeric", month: "short" });
+    const top = u.topReasons.map((r) => `${r.label} ${Math.round(r.share * 100)}%`).join(", ");
+    $("#act-total").textContent = `Total ${SignalFeed.formatCost(u.total.cost)} since ${since}${top ? ` · Mostly ${top}` : ""}`;
+  }
+
+  async function showAllOnPage() {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (tab) await chrome.tabs.sendMessage(tab.id, { type: "show-all" }).catch(() => {});
+    $("#show-all").hidden = true;
+    setTimeout(refreshStatus, 400);
+  }
+
   async function refreshStatus() {
     const status = $("#status");
     const { apiKey } = await chrome.storage.local.get("apiKey");
@@ -161,6 +229,7 @@
     const recent = lastError && Date.now() - lastError.at < 10 * 60 * 1000;
     alert.hidden = !recent;
     if (recent) alert.textContent = `${lastError.message} Your feed is shown unfiltered until it works again.`;
+    $("#show-all").hidden = true;
     if (!settings.enabled) {
       status.textContent = "Off · Alt+Shift+S to turn on";
       return;
@@ -174,7 +243,8 @@
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
       const text = tab ? await chrome.action.getBadgeText({ tabId: tab.id }) : "";
       const count = Number(text);
-      if (count > 0) status.textContent = `On · ${count} hidden on this page`;
+      if (count > 0) status.textContent = `On · ${count} hidden on this page ·`;
+      $("#show-all").hidden = !(count > 0);
     } catch {
       // No active tab (e.g. a devtools window): the plain "On" is enough.
     }

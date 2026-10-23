@@ -4,6 +4,8 @@
   body { margin: 0; background: #fff; color: #0f1419; font: 15px/1.35 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
   main { width: 600px; margin: 0 auto; border-inline: 1px solid #eff3f4; }
   article { display: block; padding: 12px 16px; border-bottom: 1px solid #eff3f4; cursor: pointer; }
+  .row { display: flex; gap: 8px; } .avatar { flex: none; width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #cfd9de, #8899a6); } .body { flex: 1; min-width: 0; }
+  [data-testid="User-Name"] a { color: inherit; text-decoration: none; }
   .name { font-weight: 700; } .handle { color: #536471; }
   [data-testid="tweetText"] { margin-top: 4px; white-space: pre-wrap; }
   .actions { margin-top: 10px; color: #536471; font-size: 13px; display: flex; gap: 48px; }
@@ -15,6 +17,7 @@ const posts = [
   ["useful", "Systems Notes", "@sysnotes", "We cut p99 latency of our Postgres-backed queue from 900 ms to 40 ms. The fix: SKIP LOCKED plus a partial index on (status, run_at). Write-up with the query plans and the benchmark script in the thread."],
   ["noise", "Outrage Daily", "@outrage", "These people are DISGUSTING and you should be FURIOUS. Absolute clowns, every single one of them. Share before they delete it!"],
   ["useful", "ML Reading", "@mlreading", "New paper compares GRPO and PPO on math reasoning at 1.5B and 7B. Same compute budget, 3 seeds each. GRPO wins at 1.5B, the gap closes at 7B, and both collapse without a KL term. Tables and code linked."],
+  ["noise", "Reply guy", "@replyguy", "Retweet this if you're still awake 🌙 Let's see how many night owls are here 👇👇"],
   ["noise", "Hype Machine", "@hypemachine", "This changes EVERYTHING. The future is here. Nothing will ever be the same. 🚀🚀🚀"],
   ["useful", "Climbing Coach", "@climbcoach", "Three finger-strength protocols compared over 8 weeks with 24 climbers: max hangs gained 11%, repeaters 7%, no-hangs 9% with half the skin wear. Data sheet and the session plans are public."],
   ["noise", "Giveaway Bot", "@freeprizes", "🎁 GIVEAWAY 🎁 Win a free iPhone! Follow, like, retweet and tag 3 friends. Winner in 24h!!"],
@@ -22,19 +25,30 @@ const posts = [
   ["noise", "Meme Lord", "@memelord", "me when the coffee kicks in 💀💀💀 lmaooo"],
   ["useful", "Infra Weekly", "@infraweekly", "Postmortem: a single misconfigured retry policy turned a 2-minute DNS blip into a 40-minute outage. Timeline, the exact config diff, and the three guardrails we added afterwards."],
   ["noise", "Engagement Farm", "@engfarm", "Reply with your age and I'll guess your salary 👇👇 (99% accurate)"],
+  ["useful", "Model Lab", "@modellab", "We're open-sourcing our RL infrastructure: 8,192 concurrent sandboxes, ~1.3M rollouts in 7 days. Code, configs and the training report are on GitHub.", "video"],
+  ["noise", "Crypto Signals", "@cryptosig", "Turn $100 into $10,000 this week 🚀 Our signals group is 94% accurate. Join now, only 50 spots left!", "ad"],
   ["useful", "Data Engineering", "@dataeng", "Benchmark: Parquet with ZSTD level 3 gave the best size/speed trade-off on our 2 TB event table, 38% smaller than Snappy with 6% slower scans. Full matrix of codecs and row-group sizes attached."]
 ];
 const feed = document.getElementById("feed");
 window.__clicks = 0;
-for (const [kind, name, handle, text] of posts) {
+for (const [kind, name, handle, text, extra] of posts) {
   const a = document.createElement("article");
   a.setAttribute("data-testid", "tweet");
   a.dataset.kind = kind;
-  a.innerHTML = `<div><span class="name"></span> <span class="handle"></span></div><div data-testid="tweetText"></div><div class="actions"><span>💬 12</span><span>🔁 4</span><span>♥ 88</span></div>`;
+  a.innerHTML = `<div class="row"><div class="avatar"></div><div class="body"><div data-testid="User-Name"><a href="/${handle.slice(1)}"><span class="name"></span></a> <span class="handle"></span></div><div data-testid="tweetText"></div><div class="actions"><span>💬 12</span><span>🔁 4</span><span>♥ 88</span></div></div></div>`;
   a.querySelector(".name").textContent = name;
   a.querySelector(".handle").textContent = handle;
   a.querySelector('[data-testid="tweetText"]').textContent = text;
+  // X wraps every video player in placementTracking; ads get a small "Ad" label by the menu.
+  if (extra === "video") a.querySelector(".body").insertAdjacentHTML("beforeend", '<div data-testid="placementTracking"><div data-testid="videoPlayer" style="height:120px;margin-top:10px;border-radius:12px;background:#0f1419"></div></div>');
+  if (extra === "ad") a.querySelector('[data-testid="User-Name"]').insertAdjacentHTML("afterend", ' <span style="float:right;color:#536471">Ad</span>');
   a.addEventListener("click", () => { window.__clicks += 1; });
+  // Like X's React: a re-render on hover rewrites the class attribute, dropping anything an extension added.
+  a.className = "css-175oi2r";
+  a.addEventListener("mouseover", () => { a.className = "css-175oi2r r-hover"; });
   feed.appendChild(a);
 }
+// On a status page the opened post (the first) has its timestamp linking to that status, as on X.
+const opened = location.pathname.match(/\/status\/(\d+)/);
+if (opened) feed.querySelector(".handle").insertAdjacentHTML("afterend", ` <a href="${location.pathname}"><time>2h</time></a>`);
 </script></body></html>

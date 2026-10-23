@@ -1,0 +1,276 @@
+{
+ "note": "Synthetic YouTube titles written for this eval, in the form the extension sends ('Title: …'). Labels and tags as in x.json. alsoBait = also clickbait, so hiding it under the default list is fine (not scored there). amb = unclear whether it is about AI (not scored for the custom rule).",
+ "site": "YouTube",
+ "items": [
+  [
+   "bait",
+   "Title: You WON'T BELIEVE What Happened Next 😳",
+   ""
+  ],
+  [
+   "bait",
+   "Title: I Tried The Viral TikTok Hack And It Changed My Life (NOT CLICKBAIT)",
+   ""
+  ],
+  [
+   "bait",
+   "Title: Doctors HATE This One Simple Trick",
+   ""
+  ],
+  [
+   "bait",
+   "Title: The Truth They Don't Want You To Know...",
+   ""
+  ],
+  [
+   "bait",
+   "Title: Why Nobody Is Talking About This (it's bad)",
+   ""
+  ],
+  [
+   "bait",
+   "Title: Watch This Before It Gets Deleted!!",
+   ""
+  ],
+  [
+   "hype",
+   "Title: This AI Is TERRIFYING... It's Over For Everyone 😱",
+   "ai"
+  ],
+  [
+   "hype",
+   "Title: The NEW AI That Will Replace ALL Programmers (Insane)",
+   "ai"
+  ],
+  [
+   "hype",
+   "Title: GPT-NEXT LEAKED?! This Changes EVERYTHING",
+   "ai"
+  ],
+  [
+   "hype",
+   "Title: This Stock Will 100x In 2027 🚀🚀🚀",
+   ""
+  ],
+  [
+   "ragebait",
+   "Title: Destroying Every Dumb Argument From Flat Earthers (Absolutely Pathetic)",
+   ""
+  ],
+  [
+   "ragebait",
+   "Title: This Influencer Is The WORST Person On The Internet",
+   ""
+  ],
+  [
+   "ragebait",
+   "Title: Karen Gets DESTROYED By Manager 😂 Instant Karma",
+   ""
+  ],
+  [
+   "promo",
+   "Title: FREE V-BUCKS GIVEAWAY!!! (NOT CLICKBAIT) 🎁🎁",
+   ""
+  ],
+  [
+   "promo",
+   "Title: How I Make $30,000/Month With AI (Copy My System) - Link In Description",
+   ""
+  ],
+  [
+   "promo",
+   "Title: Get Rich With Crypto Signals - Join My VIP Group Now",
+   ""
+  ],
+  [
+   "lowEffort",
+   "Title: Try Not To Laugh Challenge #47 🤣 IMPOSSIBLE",
+   ""
+  ],
+  [
+   "lowEffort",
+   "Title: Reacting To The WORST Cooking Fails Ever 😂",
+   ""
+  ],
+  [
+   "lowEffort",
+   "Title: funny cat compilation 2026 part 9",
+   ""
+  ],
+  [
+   "lowEffort",
+   "Title: 10 hours of satisfying slime asmr",
+   ""
+  ],
+  [
+   "entertainment",
+   "Title: I Spent 24 Hours In A Haunted Mall (GONE WRONG) 😱",
+   "alsoBait"
+  ],
+  [
+   "entertainment",
+   "Title: Celebrity Couple's SHOCKING Breakup Explained",
+   "alsoBait"
+  ],
+  [
+   "entertainment",
+   "Title: Best Movie Trailers Of The Week",
+   ""
+  ],
+  [
+   "entertainment",
+   "Title: We Built A Giant Pillow Fort In Our House",
+   ""
+  ],
+  [
+   "politics",
+   "Title: Live: Presidential Debate Analysis and Fact Check",
+   ""
+  ],
+  [
+   "politics",
+   "Title: What The New Immigration Bill Actually Changes, Explained",
+   ""
+  ],
+  [
+   "sports",
+   "Title: Match Highlights | City vs United | Premier League\nBadges: New",
+   ""
+  ],
+  [
+   "sports",
+   "Title: Top 10 Dunks Of The Season",
+   ""
+  ],
+  [
+   "keep",
+   "Title: Building a B-tree from scratch in Rust: insertion, splits and a fuzz test",
+   "hl"
+  ],
+  [
+   "keep",
+   "Title: How GPUs execute matrix multiplication: tiling, shared memory and tensor cores, explained with diagrams",
+   "ai hl"
+  ],
+  [
+   "keep",
+   "Title: MIT 6.824 Lecture 3: Raft consensus, leader election and log replication",
+   "hl"
+  ],
+  [
+   "keep",
+   "Title: Profiling Python with py-spy and flame graphs: a 20-minute walkthrough",
+   "hl"
+  ],
+  [
+   "keep",
+   "Title: Designing a rate limiter: token bucket vs sliding window, with load tests",
+   "hl"
+  ],
+  [
+   "keep",
+   "Title: Let's build a tokenizer from scratch (byte-pair encoding, step by step)",
+   "ai hl"
+  ],
+  [
+   "keep",
+   "Title: Reinforcement learning from human feedback: the full pipeline, lecture 9",
+   "ai hl"
+  ],
+  [
+   "keep",
+   "Title: How to fix a leaking kitchen tap (washer and cartridge types)",
+   ""
+  ],
+  [
+   "keep",
+   "Title: Sourdough for beginners: a full bake day, with timings and temperatures",
+   ""
+  ],
+  [
+   "keep",
+   "Title: The physics of how bicycles stay upright",
+   ""
+  ],
+  [
+   "keep",
+   "Title: Learn Spanish in context: 30 minutes of slow conversation with subtitles",
+   ""
+  ],
+  [
+   "keep",
+   "Title: Home electrical basics: what a breaker actually does",
+   ""
+  ],
+  [
+   "keep",
+   "Title: A day in the life of a hospital nurse on night shift (realistic)",
+   ""
+  ],
+  [
+   "keep",
+   "Title: Why the 2008 financial crisis happened, explained with simple diagrams",
+   ""
+  ],
+  [
+   "keep",
+   "Title: Postgres indexing in depth: B-tree, GIN, BRIN and when to use each",
+   "hl"
+  ],
+  [
+   "keep",
+   "Title: Fine-tuning a small language model on your own data, a complete tutorial",
+   "ai hl"
+  ],
+  [
+   "keep",
+   "Title: The history of the transistor: from Bell Labs to 2 nanometres",
+   "hl"
+  ],
+  [
+   "keep",
+   "Title: Beginner strength training: a 3-day full-body plan with form tips",
+   ""
+  ],
+  [
+   "keep",
+   "Title: How vaccines are tested: phases 1 to 3 explained by a researcher",
+   ""
+  ],
+  [
+   "keep",
+   "Title: Linear algebra for machine learning, part 1: vectors and dot products",
+   "ai hl"
+  ],
+  [
+   "either",
+   "Title: I Built an LLM from Scratch",
+   "ai"
+  ],
+  [
+   "either",
+   "Title: Is This The End Of Google? 🤔",
+   "ai amb"
+  ],
+  [
+   "either",
+   "Title: 5 Mistakes Every New Programmer Makes",
+   ""
+  ],
+  [
+   "either",
+   "Title: Lofi beats to study and code to",
+   ""
+  ],
+  [
+   "either",
+   "Title: I Tested Every AI Coding Assistant So You Don't Have To",
+   "ai"
+  ],
+  [
+   "either",
+   "Title: My Honest Review After 1 Year",
+   ""
+  ]
+ ]
+}

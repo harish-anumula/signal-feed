@@ -18,7 +18,7 @@
         <img class="logo" src="../icons/icon-48.png" width="28" height="28" alt="">
         <div class="title">
           <h2>Signal Feed</h2>
-          <p id="status" class="status">Loading…</p>
+          <p class="status"><span id="status">Loading…</span> <button id="show-all" type="button" class="link" hidden>Show all</button></p>
         </div>
         <label class="switch" title="Turn Signal Feed on or off (Alt+Shift+S)">
           <input id="enabled" type="checkbox" aria-label="Signal Feed on">
@@ -54,9 +54,9 @@
         <section class="card row-card">
           <h3>Strictness</h3>
           <div id="strictness" class="segmented" role="radiogroup" aria-label="Strictness">
-            <button type="button" role="radio" data-value="relaxed">Relaxed</button>
-            <button type="button" role="radio" data-value="balanced">Balanced</button>
-            <button type="button" role="radio" data-value="strict">Strict</button>
+            <button type="button" role="radio" data-value="relaxed" title="Hides only clear cases">Relaxed</button>
+            <button type="button" role="radio" data-value="balanced" title="The default: hides what most people would">Balanced</button>
+            <button type="button" role="radio" data-value="strict" title="Also hides borderline posts">Strict</button>
           </div>
         </section>
 
@@ -66,6 +66,21 @@
             <label class="site"><input id="site-x" type="checkbox"><span>X</span></label>
             <label class="site"><input id="site-youtube" type="checkbox"><span>YouTube</span></label>
           </div>
+        </section>
+
+        <section id="allow-card" class="card" hidden>
+          <h3>Always shown</h3>
+          <div id="allow" class="chips"></div>
+        </section>
+
+        <section id="activity" class="card activity">
+          <div class="activity-head">
+            <h3>Activity</h3>
+            <span id="act-week" class="act-week"></span>
+          </div>
+          <div id="spark" class="spark" role="img"></div>
+          <p id="act-today" class="act-line"></p>
+          <p id="act-total" class="act-line muted"></p>
         </section>
 
         <footer class="foot">

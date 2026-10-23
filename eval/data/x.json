@@ -1,0 +1,461 @@
+{
+ "note": "Synthetic X posts written for this eval (no real accounts or quotes). label: keep, a hide category (ragebait, bait, hype, lowEffort, promo, entertainment, politics, sports), or either (genuinely borderline, not scored). tags: ai = mainly about AI or ML; hl = worth highlighting for 'AI research, machine learning, software engineering'. alsoBait = also clickbait, so hiding it under the default list is fine (not scored there). amb = unclear whether it is about AI (not scored for the custom rule).",
+ "site": "X",
+ "items": [
+  [
+   "ragebait",
+   "These people are DISGUSTING and you should be FURIOUS. Absolute clowns, every single one of them. Share before they delete it!",
+   ""
+  ],
+  [
+   "ragebait",
+   "Imagine being this stupid in public. Ratio this clown into the ground.",
+   ""
+  ],
+  [
+   "ragebait",
+   "Every single person who uses tabs instead of spaces should be banned from writing code. Pathetic. Fight me.",
+   ""
+  ],
+  [
+   "ragebait",
+   "If you still support this company after today you are part of the problem. Shame on all of you.",
+   ""
+  ],
+  [
+   "ragebait",
+   "lmao look at this guy thinking he understands economics. embarrassing. absolute brain rot.",
+   ""
+  ],
+  [
+   "ragebait",
+   "The people defending this decision are either paid or incredibly dumb. There is no third option.",
+   ""
+  ],
+  [
+   "ragebait",
+   "Junior devs today can't even write a for loop without asking a chatbot. This generation is cooked and it's their own fault.",
+   "ai amb"
+  ],
+  [
+   "ragebait",
+   "Quote this with the worst take you've seen from the 'AI is just autocomplete' crowd. I'll start: all of them.",
+   "ai"
+  ],
+  [
+   "bait",
+   "Like and RT if you agree!!! Follow me for more 🔥🔥🔥 Drop a 💯 below",
+   ""
+  ],
+  [
+   "bait",
+   "Reply with your age and I'll guess your salary 👇👇 (99% accurate)",
+   ""
+  ],
+  [
+   "bait",
+   "Only 1% of people can solve this. Can you? 🧠 Comment your answer!",
+   ""
+  ],
+  [
+   "bait",
+   "I'm giving away my entire prompt library to the first 500 people who reply 'PROMPTS' and follow. Must follow so I can DM.",
+   ""
+  ],
+  [
+   "bait",
+   "You won't believe what I found in the latest model's system prompt... (thread) 🧵👇",
+   "ai"
+  ],
+  [
+   "bait",
+   "Say something nice about yourself in the replies. Go. 👇",
+   ""
+  ],
+  [
+   "bait",
+   "What's one tool you can't live without? Wrong answers only 😂",
+   ""
+  ],
+  [
+   "bait",
+   "Unpopular opinion: React is dead. Agree or disagree? 👇",
+   ""
+  ],
+  [
+   "hype",
+   "This changes EVERYTHING. The future is here. Nothing will ever be the same. 🚀🚀🚀",
+   ""
+  ],
+  [
+   "hype",
+   "AGI is basically here and nobody is ready. Buckle up, the next 6 months will be insane.",
+   "ai"
+  ],
+  [
+   "hype",
+   "Huge things coming. Can't say more yet but you're going to lose your mind 🤫🔥",
+   ""
+  ],
+  [
+   "hype",
+   "This new model is absolutely INSANE. It's over for programmers. Over.",
+   "ai"
+  ],
+  [
+   "hype",
+   "We are so back. The vibes are immaculate. Big week ahead. LFG",
+   ""
+  ],
+  [
+   "hype",
+   "BREAKING: a new AI just destroyed every benchmark 🤯 software engineering will never be the same 😱",
+   "ai"
+  ],
+  [
+   "hype",
+   "This one startup is going to replace every bank on earth within 3 years. Mark my words.",
+   ""
+  ],
+  [
+   "lowEffort",
+   "me when the coffee kicks in 💀💀💀 lmaooo",
+   ""
+  ],
+  [
+   "lowEffort",
+   "real",
+   ""
+  ],
+  [
+   "lowEffort",
+   "this is the tweet",
+   ""
+  ],
+  [
+   "lowEffort",
+   "monday be like 😩",
+   ""
+  ],
+  [
+   "lowEffort",
+   "ok this is funny",
+   ""
+  ],
+  [
+   "lowEffort",
+   "bro what 😭😭",
+   ""
+  ],
+  [
+   "lowEffort",
+   "can't stop thinking about this one",
+   ""
+  ],
+  [
+   "lowEffort",
+   "ngl this hits different at 2am",
+   ""
+  ],
+  [
+   "lowEffort",
+   "+1",
+   ""
+  ],
+  [
+   "promo",
+   "🎁 GIVEAWAY 🎁 Win a free iPhone! Follow, like, retweet and tag 3 friends. Winner in 24h!!",
+   ""
+  ],
+  [
+   "promo",
+   "Turn $100 into $10,000 this week 🚀 Our signals group is 94% accurate. Join now, only 50 spots left!",
+   ""
+  ],
+  [
+   "promo",
+   "I made $47k last month with this one AI side hustle. DM me 'MONEY' and I'll send you the exact blueprint 💸",
+   ""
+  ],
+  [
+   "promo",
+   "Struggling to grow on X? My course has helped 10,000+ creators go viral. 70% off today only. Link in bio.",
+   ""
+  ],
+  [
+   "promo",
+   "🔥 LIMITED DROP 🔥 Our new AI wallpaper pack is live. Use code VIRAL for 50% off. Only today!",
+   ""
+  ],
+  [
+   "promo",
+   "Hire me for your next project! Web design, logos, SEO, apps, anything. Cheap prices. DM now!!",
+   ""
+  ],
+  [
+   "entertainment",
+   "This prank on my roommate went SO wrong 😂😂 wait for the end",
+   "alsoBait"
+  ],
+  [
+   "entertainment",
+   "The finale of that dragon show last night?? I'm still not okay. Best episode of TV ever made.",
+   ""
+  ],
+  [
+   "entertainment",
+   "Which pop star had the best music video this year? Mine is easily the one with the giant roller coaster.",
+   "alsoBait"
+  ],
+  [
+   "entertainment",
+   "Celebrity couple spotted at a beach in Italy and fans think they're secretly married 👀",
+   "alsoBait"
+  ],
+  [
+   "politics",
+   "The senate vote on the new budget bill is scheduled for Thursday. Here's what's in the 400-page bill, section by section.",
+   ""
+  ],
+  [
+   "politics",
+   "Polls show the race tightening in three swing states with two weeks to go before the election.",
+   ""
+  ],
+  [
+   "politics",
+   "The governor's new housing plan would allow fourplexes on any residential lot statewide. Supporters say it will lower rents; critics worry about infrastructure.",
+   ""
+  ],
+  [
+   "politics",
+   "Parliament passed the data protection amendment 312 to 41 after a six-hour debate.",
+   ""
+  ],
+  [
+   "sports",
+   "What a finish! Last-minute penalty sends the club through to the final. Unbelievable scenes at the stadium.",
+   ""
+  ],
+  [
+   "sports",
+   "Trade deadline update: the team acquired a starting pitcher and a reliever for two minor-league prospects.",
+   ""
+  ],
+  [
+   "either",
+   "Our marathon training block: 16 weeks, peaking at 90 km a week, with two quality sessions and a long run each week. Here's the plan.",
+   ""
+  ],
+  [
+   "keep",
+   "We cut p99 latency of our Postgres-backed queue from 900 ms to 40 ms. The fix: SKIP LOCKED plus a partial index on (status, run_at). Write-up with the query plans and the benchmark script in the thread.",
+   "hl"
+  ],
+  [
+   "keep",
+   "New paper compares GRPO and PPO on math reasoning at 1.5B and 7B. Same compute budget, 3 seeds each. GRPO wins at 1.5B, the gap closes at 7B, and both collapse without a KL term. Tables and code linked.",
+   "ai hl"
+  ],
+  [
+   "keep",
+   "Three finger-strength protocols compared over 8 weeks with 24 climbers: max hangs gained 11%, repeaters 7%, no-hangs 9% with half the skin wear. Data sheet and the session plans are public.",
+   ""
+  ],
+  [
+   "keep",
+   "TIL: content-visibility: auto on long lists cut our initial render from 1.8 s to 0.6 s on a mid-range Android. Caveat: you need contain-intrinsic-size or the scrollbar jumps. Repro repo in replies.",
+   "hl"
+  ],
+  [
+   "keep",
+   "Postmortem: a single misconfigured retry policy turned a 2-minute DNS blip into a 40-minute outage. Timeline, the exact config diff, and the three guardrails we added afterwards.",
+   "hl"
+  ],
+  [
+   "keep",
+   "Benchmark: Parquet with ZSTD level 3 gave the best size/speed trade-off on our 2 TB event table, 38% smaller than Snappy with 6% slower scans. Full matrix of codecs and row-group sizes attached.",
+   "hl"
+  ],
+  [
+   "keep",
+   "We're open-sourcing our RL infrastructure: 8,192 concurrent sandboxes, ~1.3M rollouts in 7 days. Code, configs and the training report are on GitHub.",
+   "ai hl"
+  ],
+  [
+   "keep",
+   "We're hiring two research engineers for our post-training team, remote within EU time zones. You'd own RL environments and evals. Details and salary range in the link.",
+   "ai"
+  ],
+  [
+   "keep",
+   "I spent a week measuring how often our eval judge disagrees with itself. Same inputs, temperature 0: 4% of verdicts flip between runs. Writeup on why, and the fix (majority of 3) that brought it to 0.3%.",
+   "ai hl"
+  ],
+  [
+   "keep",
+   "Security advisory: versions 2.3.0 to 2.3.4 of the library leak request headers into debug logs. Upgrade to 2.3.5; if you can't, set LOG_LEVEL=info. CVE pending.",
+   "hl"
+  ],
+  [
+   "keep",
+   "Our city opened a new protected bike lane on Main Street this week. Early counts: 1,800 riders a day, up from 600, and no change in car travel times so far.",
+   ""
+  ],
+  [
+   "keep",
+   "After 10 years of running a small bakery, here are the numbers: rent is 18% of revenue, flour went up 40% since 2022, and the most profitable item is the one I almost dropped. Thread on what I'd do differently.",
+   ""
+  ],
+  [
+   "keep",
+   "Strongly disagree with the take that code review is obsolete. In our team, review caught 3 of the 5 production incidents we would have had last quarter. Here's what those reviews looked like.",
+   "hl"
+  ],
+  [
+   "keep",
+   "Hot take, but with numbers: our 'AI-written' PRs had 2x more revert commits than human ones over 6 months (412 PRs). Breakdown by repo and by type of change below.",
+   "ai hl"
+  ],
+  [
+   "keep",
+   "This is outrageous: the regional rail line will be closed for 14 months with no replacement buses for 3 of the 9 stations. Here's the agency's own document and the public comment deadline (Nov 12).",
+   ""
+  ],
+  [
+   "keep",
+   "Released v2.0 of our open-source vector index: 3x faster builds, half the memory, and a new disk-backed mode. Migration guide and benchmarks against the last release in the notes.",
+   "ai hl"
+  ],
+  [
+   "keep",
+   "Short and sweet: if your Docker builds are slow, put COPY package*.json and npm ci before COPY . — the dependency layer stays cached. Cut ours from 6 min to 40 s.",
+   "hl"
+  ],
+  [
+   "keep",
+   "Reminder that the conference CFP closes Friday 23:59 AoE. Workshop papers up to 4 pages are welcome, and it's non-archival.",
+   ""
+  ],
+  [
+   "keep",
+   "My dad was diagnosed with type 2 diabetes last year. What actually helped: a continuous glucose monitor for 2 weeks to see which meals spiked him. His A1c went from 8.1 to 6.4.",
+   ""
+  ],
+  [
+   "keep",
+   "Interesting result: fine-tuning a 1B model on 2,000 carefully filtered examples beat the same model on 50,000 raw ones on our extraction task, 81% vs 74% exact match.",
+   "ai hl"
+  ],
+  [
+   "keep",
+   "Our team is moving off microservices back to a monolith. Deploys went from 40 a day across 30 services to 12 a day for one, and incidents dropped by half. Long post on the trade-offs.",
+   "hl"
+  ],
+  [
+   "keep",
+   "The new transit app shows real-time crowding for every train car. Tried it this morning: it was right about the quiet car 4 out of 5 times.",
+   ""
+  ],
+  [
+   "keep",
+   "Gave a talk on building agent evals that don't lie. Slides, the recording and the 12-item checklist are all linked.",
+   "ai hl"
+  ],
+  [
+   "keep",
+   "We're shutting down the product on March 1. All your data can be exported as JSON from Settings until then, and we'll refund annual plans pro rata.",
+   ""
+  ],
+  [
+   "keep",
+   "Learned the hard way: SQLite in WAL mode on a network file system will corrupt your database. Local disk only. Here's how we recovered 98% of the rows.",
+   "hl"
+  ],
+  [
+   "keep",
+   "Our nonprofit is looking for volunteer tutors for high-school maths, 2 hours a week, online. Training provided.",
+   ""
+  ],
+  [
+   "keep",
+   "Comparing three ways to run LLM inference on a laptop: llama.cpp, MLX and ONNX. Tokens/sec, memory and quality on the same 8B model, M3 Pro, all scripts included.",
+   "ai hl"
+  ],
+  [
+   "keep",
+   "Thread: everything I got wrong in my first year as an engineering manager, and what I do now. 1/ I tried to keep coding at the same pace.",
+   "hl"
+  ],
+  [
+   "keep",
+   "The library just released 2 million digitised photographs from 1900–1950 into the public domain, searchable by street address.",
+   ""
+  ],
+  [
+   "keep",
+   "Ok, this is a good explanation of why attention scales quadratically and what flash attention actually changes (memory, not FLOPs). Worth 10 minutes.",
+   "ai hl"
+  ],
+  [
+   "keep",
+   "Wildfire update for the valley: evacuation order lifted for zones 3 and 4; zone 5 remains closed. Shelters at the high school are open until Sunday.",
+   ""
+  ],
+  [
+   "keep",
+   "Quick poll for people who run Postgres in production: do you use logical replication for zero-downtime major upgrades? I'm writing up our approach and want to compare.",
+   "hl"
+  ],
+  [
+   "either",
+   "lol the new design is actually pretty good",
+   ""
+  ],
+  [
+   "either",
+   "Can't believe it's already been 5 years since we launched. Grateful for this team.",
+   ""
+  ],
+  [
+   "either",
+   "Thinking about switching from VS Code to a terminal editor. Anyone done this recently?",
+   ""
+  ],
+  [
+   "either",
+   "This might be the most important paper of the year. Read it.",
+   "ai amb"
+  ],
+  [
+   "either",
+   "Hot take: most startups don't need Kubernetes.",
+   ""
+  ],
+  [
+   "either",
+   "We just raised a $12M seed round to build better tools for accountants 🎉 Thank you to our investors and early customers!",
+   ""
+  ],
+  [
+   "either",
+   "Excited to announce I'm joining a new company next month! More soon.",
+   ""
+  ],
+  [
+   "either",
+   "The best engineers I know all write a lot. Coincidence? I don't think so.",
+   ""
+  ],
+  [
+   "either",
+   "Watching the rocket launch with my kids this morning was something else 🚀",
+   ""
+  ],
+  [
+   "either",
+   "Every AI demo looks amazing until you try it on your own data.",
+   "ai"
+  ]
+ ]
+}
