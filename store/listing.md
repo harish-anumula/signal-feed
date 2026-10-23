@@ -31,7 +31,7 @@ Everything the developer dashboard asks for, in the order it asks. Upload `dist/
 > Paste an OpenRouter API key once. Then choose what to hide (chips, or your own words such as "anything except AI"), what to highlight, and Relaxed, Balanced or Strict.
 >
 > MEASURED, NOT GUESSED
-> On 63 posts from a real X feed, labelled by an AI model, the default setting caught 85% of the posts labelled as noise, and 96% of what it hid was labelled noise. The full eval is open source.
+> On 63 posts from a real X feed, labelled by Claude, the default setting caught 85% of the posts labelled as noise, and 96% of what it hid was labelled noise. The full eval is open source.
 >
 > PENNIES, AND YOU CAN SEE THEM
 > It uses Jev, TypeSafe's fast judgment model, through your own OpenRouter account: about 2 cents per 1,000 posts, half a second per batch of 20. The popup shows what you spent this week.

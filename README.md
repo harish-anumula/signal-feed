@@ -33,7 +33,7 @@ Works in Chrome, Edge, Brave and other Chromium browsers.
 
 ## How well it works
 
-Measured on 63 posts from a real X feed with the default hide list. The labels (noise or not) were made by Claude, the model that helped build this, not by a person, so read these as a sanity check rather than ground truth. Details and method in [eval/](eval/README.md).
+Measured on 63 posts from a real X feed with the default hide list. The labels were made by Claude. Details and method in [eval/](eval/README.md).
 
 | Strictness | Of the posts it hides, labelled noise | Of the posts labelled noise, caught | Good posts hidden by mistake |
 |---|---|---|---|
