@@ -33,15 +33,15 @@ Works in Chrome, Edge, Brave and other Chromium browsers.
 
 ## How well it works
 
-Measured on a real X feed with the default hide list (details and method in [eval/](eval/README.md)):
+Measured on 63 posts from a real X feed with the default hide list. The labels (noise or not) were made by Claude, the model that helped build this, not by a person, so read these as a sanity check rather than ground truth. Details and method in [eval/](eval/README.md).
 
-| Strictness | Of the posts it hides, wanted hidden | Of the posts you'd hide, caught | Good posts hidden by mistake |
+| Strictness | Of the posts it hides, labelled noise | Of the posts labelled noise, caught | Good posts hidden by mistake |
 |---|---|---|---|
 | Relaxed | 100% | 70% | 0% |
 | **Balanced** (default) | **96%** | **85%** | **3%** |
 | Strict | 79% | 96% | 19% |
 
-The reason on a folded post matches the hand label 36 of 38 times on X and 18 of 20 on YouTube.
+The reason on a folded post matches Claude's label 36 of 38 times on X and 18 of 20 on YouTube (synthetic posts).
 
 ## Cost and speed
 

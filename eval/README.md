@@ -8,9 +8,9 @@ How Signal Feed's thresholds were chosen, and how to check them again. `node eva
 |---|---|---|
 | `data/x.json` | 91 synthetic X posts: clear noise in each category, hard negatives (angry but substantive, "BREAKING" news, launches with real numbers, short but useful tips) and borderline posts marked `either` | yes |
 | `data/youtube.json` | 54 synthetic YouTube titles, same idea | yes |
-| `private/*.json` | Real posts from a real X feed, labelled by hand | **no**: gitignored, never committed |
+| `private/*.json` | Real posts from a real X feed, labelled by Claude | **no**: gitignored, never committed |
 
-Synthetic items are written for this eval and use no real accounts. Labels: `keep`, one hide category, or `either` (not scored). Tags: `ai` (for the custom-rule test), `hl` (worth highlighting), `alsoBait` and `amb` (fits more than one reading; not scored where that matters).
+All labels, synthetic and real, were made by Claude (an LLM), not by a person; nobody has checked them by hand yet, so treat the numbers as a sanity check. Synthetic items are written for this eval and use no real accounts. Labels: `keep`, one hide category, or `either` (not scored). Tags: `ai` (for the custom-rule test), `hl` (worth highlighting), `alsoBait` and `amb` (fits more than one reading; not scored where that matters).
 
 The synthetic sets are deliberately clear-cut, so they mostly catch regressions (AUC ≈ 1.0). The real feed is the honest test, and it is the one the thresholds were tuned on. To add your own private set, put a file like this in `eval/private/`: `{ "site": "X", "items": [["h", "post text"], ["k", "post text", true], ["e", "post text"]] }` (h = hide, k = keep, e = either; `true` = worth highlighting).
 
