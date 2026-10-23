@@ -1,9 +1,9 @@
 // Renders extension/icons/icon-{16,32,48,128}.png from assets/logo.svg.
 import { chromium } from 'playwright';
 import fs from 'node:fs';
-import { CHROME } from '../test/chrome.mjs';
+import { BROWSER } from '../test/env.mjs';
 const svg = fs.readFileSync('assets/logo.svg', 'utf8');
-const browser = await chromium.launch({ executablePath: CHROME });
+const browser = await chromium.launch(BROWSER);
 const page = await browser.newPage();
 for (const size of [16, 32, 48, 128]) {
   await page.setViewportSize({ width: size, height: size });

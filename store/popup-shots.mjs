@@ -5,12 +5,12 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { CHROME } from '../test/chrome.mjs';
+import { BROWSER } from '../test/env.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const EXT = path.join(root, 'extension');
 const ctx = await chromium.launchPersistentContext(fs.mkdtempSync(path.join(os.tmpdir(), 'sf-shots-')), {
-  executablePath: CHROME, headless: true, deviceScaleFactor: 2,
+  ...BROWSER, headless: true, deviceScaleFactor: 2,
   args: [`--disable-extensions-except=${EXT}`, `--load-extension=${EXT}`]
 });
 let [sw] = ctx.serviceWorkers();

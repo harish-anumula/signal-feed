@@ -8,14 +8,14 @@
 // Data: eval/data/*.json (synthetic, public) and eval/private/*.json if present (real feeds, never committed).
 // Answers are cached in eval/out/cache.json, so re-running only pays for new items or prompts (a full run is ~$0.005).
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { openRouterKey } from '../test/env.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const Core = createRequire(import.meta.url)(path.join(root, 'extension/src/core.js'));
-const key = process.env.OPENROUTER_KEY || fs.readFileSync(path.join(os.homedir(), '.inpage/openrouter_key'), 'utf8').trim();
+const key = openRouterKey();
 const arg = (name, fallback) => { const i = process.argv.indexOf(`--${name}`); return i > 0 ? process.argv[i + 1].split(',') : fallback; };
 const SCENARIOS = arg('scenarios', ['default', 'extras', 'custom', 'highlight']);
 const DESIGNS = process.argv.includes('--compare') ? ['ship', 'B'] : ['ship'];

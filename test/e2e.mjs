@@ -1,23 +1,23 @@
 // End to end in Chrome for Testing with the real extension and live Jev calls through OpenRouter.
 // x.com and www.youtube.com are served from test/pages, so the shipped manifest is tested as it is.
-// Key: OPENROUTER_KEY, or the file at ~/.inpage/openrouter_key (or SIGNAL_FEED_KEY_FILE).
+// Key: OPENROUTER_KEY, or .openrouter-key at the repo root (see test/env.mjs).
 import { chromium } from 'playwright';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { CHROME } from './chrome.mjs';
+import { BROWSER, openRouterKey } from './env.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const EXT = path.join(root, 'extension');
 const OUT = path.join(root, 'test/out');
 fs.mkdirSync(OUT, { recursive: true });
-const key = process.env.OPENROUTER_KEY || fs.readFileSync(process.env.SIGNAL_FEED_KEY_FILE || path.join(os.homedir(), '.inpage/openrouter_key'), 'utf8').trim();
+const key = openRouterKey();
 const page = (name) => fs.readFileSync(path.join(root, 'test/pages', name), 'utf8');
 
 const ctx = await chromium.launchPersistentContext(fs.mkdtempSync(path.join(os.tmpdir(), 'signal-feed-')), {
-  executablePath: CHROME,
+  ...BROWSER,
   headless: true,
   viewport: { width: 1280, height: 900 },
   deviceScaleFactor: 2,

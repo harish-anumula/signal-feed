@@ -4,3 +4,4 @@ test/out/
 dist/
 eval/private/
 eval/out/
+.openrouter-key

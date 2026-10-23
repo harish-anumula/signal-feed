@@ -1,0 +1,42 @@
+name: Wrong call
+description: A post was hidden that shouldn't have been, or the other way round.
+labels: [wrong call]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks! Paste only the text of the post or the video title, never the author's name or handle.
+  - type: dropdown
+    id: what
+    attributes:
+      label: What happened
+      options:
+        - Hidden, but it's a good post
+        - Shown, but it's noise
+        - Hidden for the wrong reason
+        - Highlighted, but it shouldn't be
+    validations:
+      required: true
+  - type: textarea
+    id: text
+    attributes:
+      label: Text of the post or video title
+    validations:
+      required: true
+  - type: input
+    id: reason
+    attributes:
+      label: Reason shown on the bar, if any
+      placeholder: e.g. Low effort
+  - type: dropdown
+    id: site
+    attributes:
+      label: Where
+      options: [X timeline, X thread, YouTube home, YouTube sidebar]
+    validations:
+      required: true
+  - type: textarea
+    id: settings
+    attributes:
+      label: Your settings
+      description: Strictness, which chips are on, and any words in "Anything else?" or "Highlight".
+      placeholder: Balanced; default chips; highlight "AI research"

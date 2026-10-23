@@ -5,7 +5,7 @@ import { chromium } from 'playwright';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { CHROME } from '../test/chrome.mjs';
+import { BROWSER } from '../test/env.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const img = (file) => `data:image/png;base64,${fs.readFileSync(path.join(root, file)).toString('base64')}`;
@@ -86,7 +86,7 @@ const pages = {
     hero('640px'))]
 };
 
-const browser = await chromium.launch({ executablePath: CHROME });
+const browser = await chromium.launch(BROWSER);
 for (const [out, [width, height, html]] of Object.entries(pages)) {
   const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1 });
   await page.setContent(`<!doctype html><html><body>${html}</body></html>`);

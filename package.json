@@ -1,16 +1,27 @@
 {
   "name": "signal-feed",
   "version": "1.0.0",
-  "description": "Fold away ragebait, hype and engagement bait on X and YouTube, and highlight what you care about.",
+  "description": "Your X and YouTube feeds, minus the bait. Ragebait, hype and engagement bait fold away, each with the reason why.",
   "author": "Harish Reddy Anumula",
   "license": "MIT",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/harish-anumula/signal-feed.git"
+  },
+  "bugs": "https://github.com/harish-anumula/signal-feed/issues",
+  "homepage": "https://github.com/harish-anumula/signal-feed#readme",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "test": "node --test test/core.test.js",
     "test:e2e": "node test/e2e.mjs",
     "check": "for f in extension/background.js extension/src/*.js extension/popup/*.js; do node --check \"$f\" || exit 1; done",
     "icons": "node scripts/render-icons.mjs",
-    "package": "node scripts/package.mjs"
+    "package": "node scripts/package.mjs",
+    "eval": "node eval/run.mjs",
+    "images": "node store/popup-shots.mjs && node store/render.mjs"
   },
   "devDependencies": {
     "playwright": "1.56"

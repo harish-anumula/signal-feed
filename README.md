@@ -1,6 +1,7 @@
 <p align="center"><img src="extension/icons/icon-128.png" width="72" height="72" alt=""></p>
 <h1 align="center">Signal Feed</h1>
 <p align="center">Your X and YouTube feeds, minus the bait. Ragebait, empty hype and engagement bait fold away before you scroll to them, each with the reason why.</p>
+<p align="center"><a href="https://github.com/harish-anumula/signal-feed/actions/workflows/ci.yml"><img src="https://github.com/harish-anumula/signal-feed/actions/workflows/ci.yml/badge.svg" alt="CI"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT license"></a></p>
 
 <p align="center"><img src="docs/screenshots/feed.png" width="860" alt="An X feed in dark mode: three posts folded into slim 'Hidden' bars tagged Low effort, Low effort and Spammy promo, and a highlighted post about open-source RL infrastructure"></p>
 
@@ -55,6 +56,8 @@ Measured with `node eval/run.mjs` on 23 Oct 2026. Answers are cached for the bro
 
 ## Settings
 
+<img src="docs/screenshots/popup.png" width="300" align="right" alt="The Signal Feed popup: hide chips, highlight topics, strictness, sites and a 7-day activity chart">
+
 | Setting | What it does |
 |---|---|
 | **Hide** | Chips for common noise (on by default: ragebait, engagement bait, empty hype, low effort, spammy promo; off: pure entertainment, politics, sports), plus your own words. Your words are applied literally, so "anything except AI" works. |
@@ -64,6 +67,8 @@ Measured with `node eval/run.mjs` on 23 Oct 2026. Answers are cached for the bro
 | **Always shown** | Accounts and channels you chose to always show. Remove any of them here. |
 
 Change the shortcut at `chrome://extensions/shortcuts`.
+
+<br clear="right">
 
 ## Privacy
 
@@ -86,17 +91,23 @@ folds / highlights, reasons <────────── thresholds, usage  <
 
 ```sh
 npm install
+npx playwright install chromium
+echo "sk-or-v1-…" > .openrouter-key   # gitignored; or set OPENROUTER_KEY
+
 npm test             # unit tests for core.js
-npm run test:e2e     # the real extension in Chrome for Testing, with live Jev calls
-node eval/run.mjs    # calibration eval (see eval/README.md)
+npm run test:e2e     # the real extension in Chromium, with live Jev calls
+npm run eval         # calibration eval (see eval/README.md)
+npm run images       # store images from the captures in store/raw/
 npm run package      # dist/signal-feed-<version>.zip for the Chrome Web Store
 ```
 
-The end-to-end test serves fixture pages at `x.com` and `youtube.com` (including X's habit of rewriting classes on hover), so the shipped manifest is tested unchanged. It and the eval need an OpenRouter key in `OPENROUTER_KEY` (or a file at `~/.inpage/openrouter_key`) and cost well under a cent per run. Set `CHROME` to a Chrome for Testing binary if yours lives somewhere else.
-
-Store images: `node store/popup-shots.mjs && node store/render.mjs` rebuilds them from the captures in `store/raw/`.
+There is no build step: `extension/` is what ships. The end-to-end test serves fixture pages at `x.com` and `youtube.com` (including X's habit of rewriting classes on hover), so the shipped manifest is tested unchanged; it and the eval cost well under a cent per run. Set `CHROME=/path/to/chrome` to test with another Chromium build.
 
 Releases: bump the version in `extension/manifest.json` and `package.json`, add a `CHANGELOG.md` entry, and push a tag like `v1.0.1`. The release workflow builds the zip and drafts a GitHub release.
+
+## Contributing
+
+Bug reports, wrong calls (a post hidden that shouldn't be, or the other way round) and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md). Security problems: [SECURITY.md](SECURITY.md).
 
 ## Limits
 

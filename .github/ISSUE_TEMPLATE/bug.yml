@@ -1,0 +1,31 @@
+name: Bug
+description: Something is broken or looks wrong.
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what you expected
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: "1. Open x.com/home\n2. Scroll to …"
+  - type: input
+    id: versions
+    attributes:
+      label: Browser and Signal Feed version
+      placeholder: Chrome 141, Signal Feed 1.0.0
+    validations:
+      required: true
+  - type: textarea
+    id: errors
+    attributes:
+      label: Errors
+      description: From the extension's Errors button at chrome://extensions, if there are any.
+      render: text
+  - type: markdown
+    attributes:
+      value: Screenshots help. Please blur names and photos of other people in them.
