@@ -127,7 +127,9 @@ test("usage: days add up, totals persist, old days drop after 30, and the week s
   for (let d = 1; d <= 35; d += 1) Core.addUsage(u, `2026-11-${String(d).padStart(2, "0")}`, { cost: 0.001 });
   assert.equal(Object.keys(u.days).length, 30);
   assert.equal(Core.formatCost(0), "$0");
-  assert.equal(Core.formatCost(0.0004), "<$0.001");
+  assert.equal(Core.formatCost(0.0004), "$0.0004");
+  assert.equal(Core.formatCost(0.00001), "<$0.0001");
+  assert.equal(Core.formatCost(0.001), "$0.001");
   assert.equal(Core.formatCost(0.0123), "$0.012");
 });
 

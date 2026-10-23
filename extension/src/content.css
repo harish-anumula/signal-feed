@@ -86,10 +86,18 @@
   font-size: 12px;
 }
 
+/* YouTube sets light text on inner elements only (its cards stay black), so pick the colour from its theme:
+   it marks dark mode with a `dark` attribute on <html>. */
 [data-sf-surface^="youtube"] > .sf-bar,
 [data-sf-surface^="youtube"] > .sf-strip {
   padding-left: var(--sf-indent, 2px);
   padding-right: 4px;
+  color: #0f0f0f;
+}
+
+html[dark] [data-sf-surface^="youtube"] > .sf-bar,
+html[dark] [data-sf-surface^="youtube"] > .sf-strip {
+  color: #f1f1f1;
 }
 
 .sf-label {

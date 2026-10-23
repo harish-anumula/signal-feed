@@ -187,6 +187,10 @@ await step('YouTube: home and sidebar fold the clickbait', async () => {
   const wrong = states.filter((s) => (s.kind === 'noise') !== (s.state === 'hidden'));
   results.push(`     YouTube: ${states.filter((s) => s.state === 'hidden').length} hidden; wrong: ${wrong.map((s) => `${s.kind}:${s.text}`).join(' | ') || 'none'}`);
   assert.ok(wrong.length <= 1, `${wrong.length} wrong`);
+  // YouTube's dark theme: the card's own colour stays black, our text must not
+  await yt.evaluate(() => document.documentElement.setAttribute('dark', ''));
+  assert.equal(await yt.$eval('[data-sf="hidden"] .sf-bar', (b) => getComputedStyle(b).color), 'rgb(241, 241, 241)');
+  await yt.evaluate(() => document.documentElement.removeAttribute('dark'));
   await yt.screenshot({ path: path.join(OUT, 'youtube.png') });
   await yt.close();
 });

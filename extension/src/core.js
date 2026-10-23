@@ -262,11 +262,12 @@
     };
   }
 
-  // $0.0123 → "$0.012"; tiny amounts still show something.
+  // Spend at a useful precision: "$0.0004" under a cent, "$0.012" under a dollar, "$1.24" above.
   function formatCost(dollars) {
     if (!dollars) return "$0";
-    if (dollars < 0.001) return "<$0.001";
-    return `$${dollars < 1 ? dollars.toFixed(3) : dollars.toFixed(2)}`;
+    if (dollars < 0.0001) return "<$0.0001";
+    if (dollars < 0.01) return `$${Number(dollars.toFixed(4))}`;
+    return `$${dollars.toFixed(dollars < 1 ? 3 : 2)}`;
   }
 
   // The key as people paste it: sometimes with an env-var prefix or quotes.
