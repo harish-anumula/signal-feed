@@ -244,5 +244,22 @@ await step('popup renders cleanly in light and dark', async () => {
   }
 });
 
+await step('an extension reload or update: the old script stops quietly and leaves the page clean', async () => {
+  const errors = [];
+  x.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
+  x.on('pageerror', (e) => errors.push(e.message));
+  await setup.evaluate(() => chrome.runtime.reload()).catch(() => {});
+  await x.waitForTimeout(1000);
+  // keep the page changing, as X does, so the old script would try to reach the extension
+  for (let i = 0; i < 5; i += 1) {
+    await x.evaluate(() => document.getElementById('feed').appendChild(document.querySelector('article').cloneNode(true)));
+    await x.waitForTimeout(150);
+  }
+  await x.waitForTimeout(500);
+  const invalidated = errors.filter((m) => /context invalidated|Receiving end/i.test(m));
+  assert.deepEqual(invalidated, [], invalidated.join(' | '));
+  assert.equal(await x.locator('.sf-bar, .sf-strip, [data-sf]').count(), 0, 'old decorations left behind');
+});
+
 await ctx.close();
 console.log(results.join('\n'));

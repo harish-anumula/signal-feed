@@ -37,17 +37,21 @@
   let countTimer = null;
   let retryTimer = null;
   let observer = null;
+  let mutations = null;
+  let dead = false;
 
   boot();
 
   async function boot() {
-    const stored = await chrome.storage.local.get(["settings", "apiKey", "allow"]);
+    const stored = await chrome.storage.local.get(["settings", "apiKey", "allow"]).catch(() => null);
+    if (!stored) return;
     settings = SignalFeed.mergeSettings(stored.settings);
     allow = allowSet(stored.allow);
     hasKey = Boolean(stored.apiKey);
     if (!document.body) await new Promise((resolve) => document.addEventListener("DOMContentLoaded", resolve, { once: true }));
     observer = new IntersectionObserver(onIntersect, { rootMargin: `${PREFETCH_PX}px 0px` });
-    new MutationObserver(scheduleScan).observe(document.documentElement, { childList: true, subtree: true });
+    mutations = new MutationObserver(scheduleScan);
+    mutations.observe(document.documentElement, { childList: true, subtree: true });
     chrome.storage.onChanged.addListener(onStorageChange);
     chrome.runtime.onMessage.addListener((message) => {
       if (message?.type === "show-all") showAll();
@@ -78,7 +82,46 @@
     return settings.enabled && hasKey && settings.sites[site];
   }
 
+  // When the extension is updated or reloaded, this copy of the script is cut off from it ("Extension context
+  // invalidated"). Stop quietly and leave the page as it was; the next page load runs the new version.
+  function alive() {
+    try {
+      return Boolean(chrome.runtime?.id);
+    } catch {
+      return false;
+    }
+  }
+
+  function shutdown() {
+    if (dead) return;
+    dead = true;
+    mutations?.disconnect();
+    observer?.disconnect();
+    clearTimeout(scanTimer);
+    clearTimeout(countTimer);
+    resetAll();
+  }
+
+  // chrome.runtime.sendMessage, resolving to null instead of throwing when the extension is gone or busy.
+  function send(message) {
+    if (dead || !alive()) {
+      shutdown();
+      return Promise.resolve(null);
+    }
+    try {
+      return chrome.runtime.sendMessage(message).catch(() => {
+        if (!alive()) shutdown();
+        return null;
+      });
+    } catch {
+      shutdown();
+      return Promise.resolve(null);
+    }
+  }
+
   function scheduleScan() {
+    if (dead) return;
+    if (!alive()) return shutdown();
     clearTimeout(scanTimer);
     scanTimer = setTimeout(scan, 80);
   }
@@ -149,7 +192,8 @@
     if (queue.size) flushTimer = setTimeout(flush, 40);
     if (!batch.length) return;
     try {
-      const response = await chrome.runtime.sendMessage({ type: "classify", items: batch.map(payloadItem) });
+      const response = await send({ type: "classify", items: batch.map(payloadItem) });
+      if (dead) return;
       if (!response?.ok) throw new Error(response?.error || "No answer");
       failures = 0;
       const byId = new Map(response.decisions.map((d) => [d.id, d]));
@@ -180,7 +224,7 @@
   // Reasons come from a second, smaller question asked only for hidden posts; the bar shows it when it lands.
   async function loadReasons(list) {
     try {
-      const response = await chrome.runtime.sendMessage({ type: "reasons", items: list.map(payloadItem) });
+      const response = await send({ type: "reasons", items: list.map(payloadItem) });
       if (!response?.ok) return;
       for (const record of list) {
         const reason = response.reasons[record.id];
@@ -272,6 +316,7 @@
   }
 
   async function alwaysShow(author) {
+    if (!alive()) return shutdown();
     const { allow: saved = {} } = await chrome.storage.local.get("allow");
     const list = Array.isArray(saved[site]) ? saved[site] : [];
     if (!list.includes(author.key)) await chrome.storage.local.set({ allow: { ...saved, [site]: [...list, author.key] } });
@@ -359,6 +404,7 @@
   }
 
   function scheduleCounts() {
+    if (dead) return;
     clearTimeout(countTimer);
     countTimer = setTimeout(sendCounts, 250);
   }
@@ -372,7 +418,7 @@
       else if (record.state === "highlighted") highlighted += 1;
     }
     const state = !hasKey ? "nokey" : !settings.enabled || !settings.sites[site] ? "off" : failing ? "error" : "on";
-    chrome.runtime.sendMessage({ type: "counts", hidden, highlighted, state }).catch(() => {});
+    send({ type: "counts", hidden, highlighted, state });
   }
 
   // ---- Reading the page ----
