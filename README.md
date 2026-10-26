@@ -1,7 +1,7 @@
 <p align="center"><img src="extension/icons/icon-128.png" width="72" height="72" alt=""></p>
 <h1 align="center">Signal Feed</h1>
 <p align="center">Your X and YouTube feeds, minus the bait. Ragebait, empty hype and engagement bait fold away before you scroll to them, each with the reason why.</p>
-<p align="center"><a href="https://github.com/harish-anumula/signal-feed/actions/workflows/ci.yml"><img src="https://github.com/harish-anumula/signal-feed/actions/workflows/ci.yml/badge.svg" alt="CI"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT license"></a></p>
+<p align="center"><a href="https://github.com/harish-anumula/signal-feed/actions/workflows/ci.yml"><img src="https://github.com/harish-anumula/signal-feed/actions/workflows/ci.yml/badge.svg" alt="CI"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT license"></a> <a href="https://chromewebstore.google.com/detail/signal-feed/jhegfhdagnakdnpljfcglmpcghoamaid"><img src="https://img.shields.io/badge/Chrome_Web_Store-install-4285F4" alt="Chrome Web Store"></a></p>
 
 <p align="center"><img src="docs/screenshots/feed.png" width="860" alt="An X feed in dark mode: three posts folded into slim 'Hidden' bars tagged Low effort, Low effort and Spammy promo, and a highlighted post about open-source RL infrastructure"></p>
 
@@ -20,9 +20,9 @@ Works on the X timeline, profiles and threads (never the post you opened), the Y
 
 ## Install
 
-**Chrome Web Store:** coming soon.
+**[Add it from the Chrome Web Store](https://chromewebstore.google.com/detail/signal-feed/jhegfhdagnakdnpljfcglmpcghoamaid)** (works in Chrome, Edge, Brave and other Chromium browsers). Then paste an [OpenRouter API key](https://openrouter.ai/keys) on the welcome tab and open X or YouTube.
 
-**From source:**
+**From source** (to try a change, or before an update reaches the store):
 
 1. Download this repository (or the zip from the latest release) and unzip it.
 2. Open `chrome://extensions`, turn on **Developer mode**, click **Load unpacked**, and choose the `extension` folder.
