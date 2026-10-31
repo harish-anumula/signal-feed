@@ -1,3 +1,4 @@
+// Signal Feed by Harish Reddy Anumula · MIT · https://github.com/harish-anumula/signal-feed
 // Popup (and the welcome tab opened on install): connect the key, then edit settings. Every change saves at once;
 // open X and YouTube tabs pick it up through chrome.storage.
 (function signalFeedPopup() {

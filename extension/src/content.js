@@ -1,3 +1,4 @@
+// Signal Feed by Harish Reddy Anumula · MIT · https://github.com/harish-anumula/signal-feed
 // Content script on X and YouTube: finds feed items, asks the service worker for decisions in batches before
 // they scroll into view, then folds or highlights them. Fails open: if anything goes wrong the feed is untouched.
 // All hooks are data-sf-* attributes and our own child elements: X (React) rewrites a post's class on re-render.

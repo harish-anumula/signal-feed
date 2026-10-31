@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.2 (31 Oct 2026)
+
+- Citation metadata: `CITATION.cff` (GitHub's "Cite this repository" button) and a DOI through Zenodo. No change to the extension's behaviour.
+
 ## 1.0.1 (23 Oct 2026)
 
 - Fix: some hidden posts on X flickered between folded and shown. Folding hid the post's text, and the text read afterwards differed slightly, so the post looked new and was checked again in a loop. Posts are now read the same way whether folded or not.

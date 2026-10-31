@@ -1,3 +1,4 @@
+// Signal Feed by Harish Reddy Anumula · MIT · https://github.com/harish-anumula/signal-feed
 // Pure logic shared by the service worker, the content script, the popup, the tests and the eval:
 // settings, the Jev requests, their parsing, and the hide/highlight decision. No browser APIs here.
 (function signalFeedCore(root, factory) {

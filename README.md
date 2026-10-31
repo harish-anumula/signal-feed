@@ -115,6 +115,23 @@ Bug reports, wrong calls (a post hidden that shouldn't be, or the other way roun
 - Search results and comments aren't filtered.
 - X and YouTube change their markup from time to time. If posts stop being picked up, please open an issue.
 
+## Citing
+
+If you use Signal Feed in research, a write-up or a product, please cite it. GitHub's **Cite this repository** button (from [CITATION.cff](CITATION.cff)) gives APA and BibTeX:
+
+```bibtex
+@software{anumula_signalfeed_2026,
+  author  = {Anumula, Harish Reddy},
+  title   = {Signal Feed: X and YouTube feeds, minus the bait},
+  year    = {2026},
+  version = {1.0.2},
+  url     = {https://github.com/harish-anumula/signal-feed},
+  license = {MIT}
+}
+```
+
+If you copy or adapt its code, keep the MIT copyright notice that comes with it ([LICENSE](LICENSE)).
+
 ## License
 
 MIT

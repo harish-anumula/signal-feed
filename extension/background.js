@@ -1,3 +1,4 @@
+// Signal Feed by Harish Reddy Anumula · MIT · https://github.com/harish-anumula/signal-feed
 // Service worker: owns the OpenRouter key, calls Jev, caches decisions for the browser session,
 // shows the per-tab badge and handles the on/off shortcut. Pages never see the key.
 importScripts("src/core.js");

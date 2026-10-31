@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "Signal Feed: X and YouTube feeds, minus the bait"
+abstract: "A Chrome extension that folds ragebait, empty hype and engagement bait in the X and YouTube feeds, each with the reason why, using a fast judgment model through the user's own OpenRouter key; with an open evaluation set."
+authors:
+  - family-names: Anumula
+    given-names: Harish Reddy
+    orcid: "https://orcid.org/0009-0009-9294-0780"
+repository-code: "https://github.com/harish-anumula/signal-feed"
+url: "https://github.com/harish-anumula/signal-feed"
+license: MIT
+version: "1.0.2"
+date-released: 2026-10-31
+keywords:
+  - "browser extension"
+  - "content filtering"
+  - "social media"
+  - "LLM"
+  - "evaluation"
